@@ -59,7 +59,11 @@
       <article class="viz-block">
         <div class="viz-header">
           <h2>Embedding space</h2>
-          <p class="viz-sub">After you ask, this uses a local cosine layout so true nearest neighbors sit near your query. Bright point = query; linked points = selected neighbors.</p>
+          <p class="viz-sub">Toggle between the stable PCA corpus map and a local cosine layout that pulls true neighbors near your query.</p>
+          <div class="viz-toggle" id="viz-toggle" hidden role="group" aria-label="Visualization mode">
+            <button type="button" data-view="pca" class="viz-toggle-btn">Stable PCA</button>
+            <button type="button" data-view="cosine" class="viz-toggle-btn is-active">Cosine local</button>
+          </div>
         </div>
         <div id="viz-canvas" class="viz-canvas" role="img" aria-label="3D embedding visualization"></div>
         <p id="viz-meta" class="viz-meta"></p>

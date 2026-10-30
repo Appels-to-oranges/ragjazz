@@ -216,6 +216,44 @@ button {
   font-size: 0.92rem;
 }
 
+.viz-toggle {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-top: 0.85rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(243, 234, 215, 0.14);
+}
+
+.viz-toggle-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  color: rgba(243, 234, 215, 0.78);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.viz-toggle-btn:hover:not(:disabled) {
+  color: #fff8ef;
+}
+
+.viz-toggle-btn.is-active {
+  background: var(--brass);
+  color: #fff8ef;
+}
+
+.viz-toggle-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .viz-canvas {
   width: 100%;
   height: min(420px, 58vw);

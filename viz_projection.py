@@ -1,15 +1,9 @@
 """
 Visualization helpers for embedding space.
 
-Why neighbors looked far away before:
-  Global PCA preserves variance axes, not local cosine neighborhoods.
-  A point can be a top cosine neighbor in 384-d and still land far from
-  the query in a 3-d PCA plot.
-
-Fix used at query time:
-  Build a *local* 3-d layout with classical MDS on cosine distances among
-  the query, its retrieved neighbors, and a sample of other chunks.
-  In that view, nearer ≈ higher cosine similarity by construction.
+Two views are returned for each query:
+  - pca: stable global PCA coordinates (corpus overview; neighbors may look far)
+  - cosine: local MDS on cosine distances (neighbors sit near the query)
 """
 
 from __future__ import annotations
@@ -66,36 +60,77 @@ def classical_mds(distances: np.ndarray, n_components: int = 3) -> np.ndarray:
     eigvals = np.maximum(eigvals[order][:n_components], 0.0)
     eigvecs = eigvecs[:, order][:, :n_components]
     coords = eigvecs * np.sqrt(eigvals)
-    # Center query (index 0) at origin for a stable camera target.
     coords = coords - coords[0]
     spread = np.percentile(np.linalg.norm(coords, axis=1), 95) or 1.0
     return coords / spread
 
 
-def build_local_cosine_visualization(
+def _project_query_pca(query_vec: np.ndarray, meta_cloud: Dict[str, Any]) -> Dict[str, float]:
+    mean = np.asarray(meta_cloud["pca"]["mean"], dtype=np.float64)
+    components = np.asarray(meta_cloud["pca"]["components"], dtype=np.float64)
+    scale = float(meta_cloud.get("scale") or 1.0)
+    coords = (query_vec - mean) @ components.T
+    coords = coords / scale
+    return {"x": float(coords[0]), "y": float(coords[1]), "z": float(coords[2])}
+
+
+def _neighbor_base(hits: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    neighbors = []
+    for hit in hits:
+        meta = hit.get("metadata") or {}
+        neighbors.append(
+            {
+                "id": hit.get("id"),
+                "title": meta.get("title", ""),
+                "section": meta.get("section", ""),
+                "similarity": round(1 - float(hit.get("distance", 1)), 4),
+            }
+        )
+    return neighbors
+
+
+def build_pca_view(
+    query_vec: np.ndarray,
+    hits: List[Dict[str, Any]],
+    meta_cloud: Dict[str, Any],
+) -> Dict[str, Any]:
+    by_id = {p["id"]: p for p in meta_cloud.get("points", [])}
+    query = _project_query_pca(query_vec, meta_cloud)
+    neighbors = []
+    for base in _neighbor_base(hits):
+        point = by_id.get(base["id"]) if base.get("id") else None
+        entry = dict(base)
+        if point:
+            entry.update({"x": point["x"], "y": point["y"], "z": point["z"]})
+        neighbors.append(entry)
+    return {
+        "method": "pca",
+        "note": (
+            "Stable PCA overview of the full corpus. Neighbors are still chosen by "
+            "cosine similarity in 384-d — they may not look nearby in this projection."
+        ),
+        "query": query,
+        "neighbors": neighbors,
+        "context": [],
+    }
+
+
+def build_cosine_view(
     question: str,
+    query_vec: np.ndarray,
     hits: List[Dict[str, Any]],
     collection,
+    meta_cloud: Optional[Dict[str, Any]],
     context_sample: int = CONTEXT_SAMPLE,
 ) -> Dict[str, Any]:
-    """
-    Local cosine-MDS scene for one query.
-
-    Returns query + neighbor + context coordinates where spatial nearness
-    tracks cosine distance for this neighborhood.
-    """
-    meta_cloud = load_embeddings_3d()
     title_color = {}
     if meta_cloud:
         for i, title in enumerate(meta_cloud.get("titles") or []):
             title_color[title] = i
 
-    query_vec = embed_texts([question])[0]
-
     neighbor_ids = [h.get("id") for h in hits if h.get("id")]
     neighbor_meta = {h.get("id"): h for h in hits if h.get("id")}
 
-    # Sample additional corpus points for contrast (not the selected neighbors).
     all_ids = []
     if meta_cloud:
         all_ids = [p["id"] for p in meta_cloud.get("points", [])]
@@ -106,14 +141,19 @@ def build_local_cosine_visualization(
     candidates = [i for i in all_ids if i not in neighbor_set]
     RNG.shuffle(candidates)
     context_ids = candidates[:context_sample]
-
     ordered_ids = neighbor_ids + context_ids
     if not ordered_ids:
-        return {"available": False, "error": "No points available for visualization"}
+        return {
+            "method": "cosine_mds",
+            "note": "No points available for local cosine layout.",
+            "query": {"x": 0.0, "y": 0.0, "z": 0.0},
+            "neighbors": [],
+            "context": [],
+        }
 
     fetched = collection.get(ids=ordered_ids, include=["embeddings", "metadatas", "documents"])
     id_to_index = {chunk_id: i for i, chunk_id in enumerate(fetched["ids"])}
-    # Keep a stable order matching ordered_ids (drop any missing).
+
     vectors = [query_vec]
     rows: List[Dict[str, Any]] = [
         {"role": "query", "id": "query", "title": "Your query", "section": "", "preview": question}
@@ -166,20 +206,43 @@ def build_local_cosine_visualization(
         else:
             context.append(point)
 
-    # Preserve retrieval order for neighbors.
     by_id = {n["id"]: n for n in neighbors}
     neighbors_ordered = [by_id[i] for i in neighbor_ids if i in by_id]
 
     return {
-        "available": True,
         "method": "cosine_mds",
-        "metric": "cosine",
         "note": (
-            "Local view arranged with multidimensional scaling on cosine distances "
-            "for this query. Closer points ≈ higher cosine similarity. "
-            "(A global PCA map cannot reliably keep cosine neighbors nearby.)"
+            "Local cosine layout: points arranged so closer ≈ higher cosine similarity "
+            "for this query."
         ),
         "query": query_point,
         "neighbors": neighbors_ordered,
         "context": context,
+    }
+
+
+def build_query_visualization(
+    question: str,
+    hits: List[Dict[str, Any]],
+    collection,
+) -> Dict[str, Any]:
+    meta_cloud = load_embeddings_3d()
+    query_vec = embed_texts([question])[0]
+
+    cosine_view = build_cosine_view(question, query_vec, hits, collection, meta_cloud)
+    pca_view = None
+    if meta_cloud and meta_cloud.get("pca"):
+        pca_view = build_pca_view(query_vec, hits, meta_cloud)
+
+    if not pca_view and not cosine_view.get("neighbors"):
+        return {"available": False, "error": "Visualization unavailable"}
+
+    return {
+        "available": True,
+        "metric": "cosine",
+        "default_view": "cosine",
+        "views": {
+            "pca": pca_view,
+            "cosine": cosine_view,
+        },
     }

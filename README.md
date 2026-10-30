@@ -28,10 +28,10 @@ Retrieval over-fetches candidates and diversifies by article/section so answers 
 ### Embedding-space visualization
 The UI includes a Three.js 3D view of the knowledge base.
 
-- **Idle overview:** PCA of all chunk vectors (topic clusters)
-- **After a query:** local **cosine MDS** layout of the query + retrieved neighbors + sample context points, so spatial nearness matches cosine similarity
+- **Stable PCA:** fixed corpus map from the initial vectorization (topic clusters)
+- **Cosine local:** MDS layout of the query + neighbors + sample context, so spatial nearness matches cosine similarity
 
-Neighbors are always chosen by cosine similarity in 384-d. Rebuild the PCA overview with:
+Use the in-UI toggle after asking a question. Neighbors are always chosen by cosine similarity in 384-d. Rebuild the PCA overview with:
 
 ```bash
 python build_embeddings_3d.py

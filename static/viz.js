@@ -1,8 +1,9 @@
 /**
  * 3D embedding viewer (Three.js).
  *
- * Idle: global PCA cloud (topic overview).
- * After ask: local cosine-MDS layout so nearest neighbors sit near the query.
+ * Toggle:
+ *  - pca: stable global PCA cloud + query/neighbors in that space
+ *  - cosine: local MDS layout so cosine neighbors sit near the query
  */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -10,12 +11,14 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const canvasHost = document.getElementById("viz-canvas");
 const metaEl = document.getElementById("viz-meta");
 const legendEl = document.getElementById("viz-legend");
+const toggleEl = document.getElementById("viz-toggle");
 
 let renderer, scene, camera, controls, cloudPoints, queryMesh, neighborGroup, lineGroup, contextPoints;
 let cloudData = null;
 let animationId = null;
 let resizeObserver = null;
-let mode = "global"; // global | local
+let activeView = "cosine"; // pca | cosine
+let lastVisualization = null;
 
 const PALETTE = [
   "#c45c26", "#d4a017", "#2f6f6a", "#7a4e2d", "#3d5a80",
@@ -38,12 +41,44 @@ export async function initViz() {
     setupScene();
     drawGlobalCloud();
     drawLegend(cloudData.titles || []);
+    wireToggle();
     if (metaEl) {
       metaEl.textContent =
-        "Overview: PCA of the full corpus. After you ask, this switches to a local cosine layout so true neighbors sit near your query.";
+        "Overview: stable PCA of the full corpus. Ask a question, then toggle Cosine local to pull true neighbors near the query.";
     }
   } catch (err) {
     if (metaEl) metaEl.textContent = err.message || "Visualization unavailable";
+  }
+}
+
+function wireToggle() {
+  if (!toggleEl || toggleEl.dataset.wired) return;
+  toggleEl.dataset.wired = "1";
+  toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const view = btn.dataset.view;
+      if (!view || view === activeView) return;
+      setActiveView(view);
+    });
+  });
+}
+
+function setActiveView(view) {
+  activeView = view;
+  if (toggleEl) {
+    toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.view === view);
+    });
+  }
+  if (lastVisualization) {
+    renderActiveView(lastVisualization);
+  } else if (view === "pca") {
+    drawGlobalCloud();
+    clearHighlights();
+    resetCamera();
+    if (metaEl) {
+      metaEl.textContent = "Stable PCA overview of the knowledge base.";
+    }
   }
 }
 
@@ -145,7 +180,6 @@ function drawGlobalCloud() {
     })
   );
   scene.add(cloudPoints);
-  mode = "global";
 }
 
 function drawLocalContext(points) {
@@ -224,17 +258,22 @@ function clearHighlights() {
   }
 }
 
-export function updateViz(visualization) {
-  if (!visualization?.available || !scene) return;
-  const q = visualization.query;
+function resetCamera() {
+  if (!controls || !camera) return;
+  controls.target.set(0, 0, 0);
+  camera.position.set(2.4, 1.6, 2.8);
+  controls.update();
+}
+
+function focusOn(q) {
+  controls.target.set(q.x, q.y, q.z);
+  camera.position.set(q.x + 1.6, q.y + 1.1, q.z + 1.8);
+  controls.update();
+}
+
+function paintHighlights(view) {
+  const q = view?.query;
   if (!q) return;
-
-  // Switch to local cosine-MDS coordinates for this query.
-  if (visualization.method === "cosine_mds") {
-    drawLocalContext(visualization.context || []);
-    mode = "local";
-  }
-
   clearHighlights();
 
   const queryGeo = new THREE.SphereGeometry(0.07, 24, 24);
@@ -249,7 +288,7 @@ export function updateViz(visualization) {
   queryMesh.position.set(q.x, q.y, q.z);
   scene.add(queryMesh);
 
-  const neighbors = visualization.neighbors || [];
+  const neighbors = view.neighbors || [];
   neighbors.forEach((n, idx) => {
     if (n.x == null) return;
     const geo = new THREE.SphereGeometry(0.05, 18, 18);
@@ -278,14 +317,44 @@ export function updateViz(visualization) {
     const labels = neighbors
       .map((n) => `${n.title} (${Math.round((n.similarity || 0) * 100)}%)`)
       .join(" · ");
-    metaEl.textContent = visualization.note
-      ? `${visualization.note}${labels ? ` Selected: ${labels}` : ""}`
+    metaEl.textContent = view.note
+      ? `${view.note}${labels ? ` Selected: ${labels}` : ""}`
       : labels || "";
   }
 
-  controls.target.set(q.x, q.y, q.z);
-  camera.position.set(q.x + 1.6, q.y + 1.1, q.z + 1.8);
-  controls.update();
+  focusOn(q);
+}
+
+function renderActiveView(visualization) {
+  if (!visualization?.available || !scene) return;
+  const views = visualization.views || {};
+  const preferred = activeView === "pca" ? "pca" : "cosine";
+  const view = views[preferred] || views.cosine || views.pca;
+  if (!view) return;
+
+  if (preferred === "pca") {
+    drawGlobalCloud();
+  } else {
+    drawLocalContext(view.context || []);
+  }
+  paintHighlights(view);
+}
+
+export function updateViz(visualization) {
+  if (!visualization?.available) return;
+  lastVisualization = visualization;
+  activeView = visualization.default_view || "cosine";
+
+  if (toggleEl) {
+    toggleEl.hidden = false;
+    toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
+      const hasView = Boolean(visualization.views?.[btn.dataset.view]);
+      btn.disabled = !hasView;
+      btn.classList.toggle("is-active", btn.dataset.view === activeView);
+    });
+  }
+
+  renderActiveView(visualization);
 }
 
 function escapeHtml(value) {
