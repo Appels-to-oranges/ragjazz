@@ -139,7 +139,7 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     wiki = wikipediaapi.Wikipedia(
-        user_agent="RAG_Jazz_Piano/1.0 (educational project; github.com/Appels-to-oranges/RAG_JAZZ)",
+        user_agent="ragjazz/1.0 (educational project; https://ragjazz.fyi ; github.com/Appels-to-oranges/ragjazz)",
         language="en",
     )
 

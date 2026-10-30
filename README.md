@@ -1,8 +1,8 @@
-# RAG Jazz
+# ragjazz
 
-A jazz piano / music theory Q&A app grounded in a curated Wikipedia knowledge base via retrieval-augmented generation.
+Live jazz piano / music theory Q&A at [ragjazz.fyi](https://ragjazz.fyi).
 
-Ask a question, get matching source passages, and (when configured) a natural-language answer from Groq's free tier or local Ollama. If the LLM is unavailable, the app falls back to retrieval-only.
+Ask a question and the app retrieves grounded passages from a curated Wikipedia knowledge base (RAG), then answers with Groq’s free tier (or local Ollama). If the LLM is unavailable, it falls back to retrieval-only. Includes a plain-language [How it works](https://ragjazz.fyi/how-it-works) page and a 3D PCA map of the embedding space.
 
 ## Knowledge base
 
@@ -23,7 +23,7 @@ Jazz scale, Bebop scale, Blues scale, Pentatonic scale, Altered scale, Modal jaz
 ### Voicing & voice leading
 Voicing (music), Voice leading, Upper structure, Quartal harmony, Altered chord
 
-Retrieval over-fetches candidates and diversifies by article/section so answers are less repetitive. Chunking uses 650-char chunks with 50-char overlap.
+Retrieval over-fetches candidates and diversifies by article/section so answers are less repetitive. Chunking uses 650-char chunks with 50-char overlap. Embeddings are **all-MiniLM-L6-v2** (384-d); neighbors use cosine similarity.
 
 ### Embedding-space visualization
 The UI includes a Three.js PCA map of the knowledge base. Neighbors are chosen by cosine similarity in 384-d and highlighted on the map (3D distance is only an approximation). Rebuild with:
@@ -66,8 +66,6 @@ uvicorn app:app --reload --port 8000
 Open http://127.0.0.1:8000  
 Plain-language explainer: http://127.0.0.1:8000/how-it-works
 
-**Live:** https://ragjazz.fyi
-
 ### CLI
 
 ```bash
@@ -101,15 +99,15 @@ If Groq rate-limits or errors, the API returns retrieval results with a notice.
 ### Docker
 
 ```bash
-docker build -t rag-jazz .
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key -e LLM_PROVIDER=groq rag-jazz
+docker build -t ragjazz .
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key -e LLM_PROVIDER=groq ragjazz
 ```
 
 The image builds the Chroma index at build time.
 
 ### Railway / Procfile
 
-Hosted on Railway as project `ragjazz` (service `web`). Custom domain: `ragjazz.fyi`.
+Hosted on Railway as project `ragjazz` (service `web`). Custom domain: [ragjazz.fyi](https://ragjazz.fyi).
 
 `start.sh` builds `chroma_db` on first boot if missing, then starts uvicorn. Set:
 
