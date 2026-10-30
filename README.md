@@ -6,19 +6,24 @@ Ask a question, get matching source passages, and (when configured) a natural-la
 
 ## Knowledge base
 
-**33 articles** (~810 chunks), focused on jazz piano theory:
+**39 articles** (~814 chunks), focused on jazz piano theory:
+
+### Foundations
+Interval (music), Triad (music), Key signature, Major scale, Minor scale
 
 ### Core piano & styles
 Jazz piano, Stride piano, Boogie-woogie, Comping (jazz), Block chord, Walking bass
 
 ### Harmony & progressions
-Jazz harmony, Chord (music), Seventh chord, Extended chord, Chord progression, ii–V–I progression, Secondary dominant, Tritone substitution, Coltrane changes, Backdoor progression, Turnaround (music), Rhythm changes, Twelve-bar blues, Circle of fifths
+Jazz harmony, Chord (music), Seventh chord, Extended chord, Slash chord, Chord progression, ii–V–I progression, Secondary dominant, Tritone substitution, Coltrane changes, Backdoor progression, Turnaround (music), Rhythm changes, Twelve-bar blues, Circle of fifths
 
 ### Scales & improvisation
 Jazz scale, Bebop scale, Blues scale, Pentatonic scale, Altered scale, Modal jazz, Jazz improvisation, Chord-scale system
 
 ### Voicing & voice leading
 Voicing (music), Voice leading, Upper structure, Quartal harmony, Altered chord
+
+Retrieval over-fetches candidates and diversifies by article/section so answers are less repetitive. Chunking uses 650-char chunks with 50-char overlap.
 
 ## Local setup
 

@@ -52,6 +52,15 @@ ARTICLES = [
     "Quartal harmony",
     "Block chord",
     "Walking bass",
+    # Expansion: beginner foundations + slash chords
+    # Skip: Reharmonization→Harmonization, Guide tone→Jazz improvisation,
+    # Drop 2 / Shell chord (no usable Wikipedia pages).
+    "Interval (music)",
+    "Triad (music)",
+    "Key signature",
+    "Major scale",
+    "Minor scale",
+    "Slash chord",
 ]
 
 OUTPUT_DIR = "articles"

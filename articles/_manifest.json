@@ -1,6 +1,6 @@
 {
-  "total_articles": 33,
-  "generated_at": "2026-10-30T01:29:21.612115+00:00",
+  "total_articles": 39,
+  "generated_at": "2026-10-30T01:37:27.151126+00:00",
   "articles": [
     {
       "title": "Altered chord",
@@ -93,6 +93,12 @@
       "summary_preview": "The ii–V–I progression (\"two–five–one\", occasionally referred to as the ii–V–I turnaround) is a common cadential chord p..."
     },
     {
+      "title": "Interval (music)",
+      "file": "interval_music.json",
+      "url": "https://en.wikipedia.org/wiki/Interval_(music)",
+      "summary_preview": "In music theory, an interval is a difference in pitch between two sounds. An interval may be described as horizontal, li..."
+    },
+    {
       "title": "Jazz harmony",
       "file": "jazz_harmony.json",
       "url": "https://en.wikipedia.org/wiki/Jazz_harmony",
@@ -115,6 +121,24 @@
       "file": "jazz_scale.json",
       "url": "https://en.wikipedia.org/wiki/Jazz_scale",
       "summary_preview": "A jazz scale is any musical scale used in jazz. Many \"jazz scales\" are common scales drawn from Western European classic..."
+    },
+    {
+      "title": "Key signature",
+      "file": "key_signature.json",
+      "url": "https://en.wikipedia.org/wiki/Key_signature",
+      "summary_preview": "In Western musical notation, a key signature is a set of sharp (♯), flat (♭), or rarely, natural (♮) symbols placed on t..."
+    },
+    {
+      "title": "Major scale",
+      "file": "major_scale.json",
+      "url": "https://en.wikipedia.org/wiki/Major_scale",
+      "summary_preview": "A major scale is a sequence of musical notes containing a major triad on the tonic.\nMost commonly, the term \"major scale..."
+    },
+    {
+      "title": "Minor scale",
+      "file": "minor_scale.json",
+      "url": "https://en.wikipedia.org/wiki/Minor_scale",
+      "summary_preview": "A minor scale is a musical scale that contains a minor third, relative to its tonic note.\nThe term developed in western ..."
     },
     {
       "title": "Modal jazz",
@@ -153,10 +177,22 @@
       "summary_preview": "A seventh chord is a chord consisting of a triad plus a note forming an interval of a seventh above the chord's root. Wh..."
     },
     {
+      "title": "Slash chord",
+      "file": "slash_chord.json",
+      "url": "https://en.wikipedia.org/wiki/Slash_chord",
+      "summary_preview": "In music, especially modern popular music, a slash chord or slashed chord, also compound chord, is a chord whose bass no..."
+    },
+    {
       "title": "Stride (music)",
       "file": "stride_piano.json",
       "url": "https://en.wikipedia.org/wiki/Stride_(music)",
       "summary_preview": "Stride jazz piano, often shortened to stride, is a jazz piano style that arose from ragtime players. Prominent stride pi..."
+    },
+    {
+      "title": "Triad (music)",
+      "file": "triad_music.json",
+      "url": "https://en.wikipedia.org/wiki/Triad_(music)",
+      "summary_preview": "In music, a triad is a set of three notes (or \"pitch classes\") that can be stacked vertically in thirds. Triads are the ..."
     },
     {
       "title": "Tritone substitution",

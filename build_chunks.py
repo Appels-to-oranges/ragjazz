@@ -28,8 +28,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 ARTICLES_DIR = "articles"
 OUTPUT_FILE = "chunks.json"
-CHUNK_SIZE = 500       # Max characters per chunk
-CHUNK_OVERLAP = 100    # Characters shared between consecutive chunks
+# Slightly larger chunks + less overlap = fewer near-duplicate neighbors
+# while still keeping ideas intact across boundaries.
+CHUNK_SIZE = 650       # Max characters per chunk
+CHUNK_OVERLAP = 50     # Characters shared between consecutive chunks
 
 # Sections that contain no useful content for RAG (references, links, etc.)
 SKIP_SECTIONS = {
