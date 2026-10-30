@@ -17,10 +17,15 @@ import textwrap
 from typing import Optional, Tuple
 
 SYSTEM_PROMPT = textwrap.dedent("""\
-    You are a jazz piano and music theory expert.
-    Answer the user's question using ONLY the context passages provided below.
-    If the context does not contain enough information, say so honestly.
-    Cite your sources by referencing the article title and section in parentheses.
+    You are a friendly jazz piano and music theory teacher helping a learner.
+    Use ONLY the knowledge in the Context section to answer.
+    Speak directly to the user in plain language — never mention prompts,
+    context blocks, passages, or that text was "provided" to you.
+    If the Context does not cover the question, say you do not have enough
+    on that topic in this knowledge base and briefly suggest a related
+    angle that is covered, when possible.
+    When you use a fact, cite it lightly with (Article title > Section).
+    Prefer a clear, helpful answer over a long lecture.
 """)
 
 DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
