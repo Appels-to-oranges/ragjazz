@@ -86,14 +86,24 @@ See `.env.example`.
 
 If Groq rate-limits or errors, the API returns retrieval results with a notice.
 
-## Deploy (Docker)
+## Deploy
+
+### Docker
 
 ```bash
 docker build -t rag-jazz .
 docker run -p 8000:8000 -e GROQ_API_KEY=your_key -e LLM_PROVIDER=groq rag-jazz
 ```
 
-The image builds the Chroma index at build time. Set `PORT` as needed for Railway or similar hosts.
+The image builds the Chroma index at build time.
+
+### Railway / Procfile
+
+`start.sh` builds `chroma_db` on first boot if missing, then starts uvicorn. Set:
+
+- `GROQ_API_KEY`
+- `LLM_PROVIDER=groq` (or leave unset to auto-detect from the key)
+- `PORT` (provided by the host)
 
 ## Project layout
 
