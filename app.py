@@ -28,11 +28,7 @@ from rag_core import (
     hits_to_sources,
     retrieve,
 )
-from viz_projection import (
-    attach_neighbor_positions,
-    load_embeddings_3d,
-    project_query,
-)
+from viz_projection import build_local_cosine_visualization, load_embeddings_3d
 
 STATIC_DIR = Path(__file__).parent / "static"
 RATE_LIMIT_WINDOW_SEC = 60
@@ -102,26 +98,13 @@ def _get_collection():
 
 def _build_visualization(question: str, hits: list) -> Optional[dict]:
     try:
-        query_point = project_query(question)
-        neighbors, note = attach_neighbor_positions(hits)
+        collection = _get_collection()
+        return build_local_cosine_visualization(question, hits, collection)
     except Exception as exc:  # noqa: BLE001
         return {
             "available": False,
             "error": str(exc),
         }
-    if not query_point:
-        return {
-            "available": False,
-            "error": note or "3D map unavailable",
-        }
-    return {
-        "available": True,
-        "method": "pca",
-        "metric": "cosine",
-        "note": note,
-        "query": query_point,
-        "neighbors": neighbors,
-    }
 
 
 @app.get("/")
