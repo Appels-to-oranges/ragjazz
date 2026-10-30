@@ -27,6 +27,12 @@ const PALETTE = [
   "#355070", "#b5651d", "#606c38", "#283618", "#a4161a",
 ];
 
+// Mild visual scale-up: more breathing room + easier click targets.
+const SPREAD = 1.4;
+const CLOUD_POINT_SIZE = 0.05;
+const NEIGHBOR_RADIUS = 0.065;
+const QUERY_RADIUS = 0.09;
+
 function colorForIndex(index) {
   return new THREE.Color(PALETTE[index % PALETTE.length]);
 }
@@ -83,8 +89,8 @@ function setupScene() {
   key.position.set(3, 4, 2);
   scene.add(key);
 
-  const grid = new THREE.GridHelper(6, 12, 0x5a4634, 0x2a2118);
-  grid.position.y = -1.2;
+  const grid = new THREE.GridHelper(8, 16, 0x5a4634, 0x2a2118);
+  grid.position.y = -1.6;
   scene.add(grid);
 
   neighborGroup = new THREE.Group();
@@ -93,7 +99,7 @@ function setupScene() {
   scene.add(lineGroup);
 
   raycaster = new THREE.Raycaster();
-  raycaster.params.Points = { threshold: 0.06 };
+  raycaster.params.Points = { threshold: 0.09 };
 
   renderer.domElement.style.cursor = "pointer";
   renderer.domElement.addEventListener("pointerdown", onPointerDown);
@@ -253,9 +259,9 @@ function drawGlobalCloud() {
   const colors = new Float32Array(n * 3);
 
   cloudData.points.forEach((p, i) => {
-    positions[i * 3] = p.x;
-    positions[i * 3 + 1] = p.y;
-    positions[i * 3 + 2] = p.z;
+    positions[i * 3] = p.x * SPREAD;
+    positions[i * 3 + 1] = p.y * SPREAD;
+    positions[i * 3 + 2] = p.z * SPREAD;
     const c = colorForIndex(p.color_index || 0);
     colors[i * 3] = c.r;
     colors[i * 3 + 1] = c.g;
@@ -269,10 +275,10 @@ function drawGlobalCloud() {
   cloudPoints = new THREE.Points(
     geometry,
     new THREE.PointsMaterial({
-      size: 0.035,
+      size: CLOUD_POINT_SIZE,
       vertexColors: true,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.55,
       sizeAttenuation: true,
     })
   );
@@ -331,7 +337,11 @@ export function updateViz(visualization) {
   drawGlobalCloud();
   clearHighlights();
 
-  const queryGeo = new THREE.SphereGeometry(0.07, 24, 24);
+  const qx = q.x * SPREAD;
+  const qy = q.y * SPREAD;
+  const qz = q.z * SPREAD;
+
+  const queryGeo = new THREE.SphereGeometry(QUERY_RADIUS, 24, 24);
   const queryMat = new THREE.MeshStandardMaterial({
     color: 0xfff1c9,
     emissive: 0xc45c26,
@@ -340,20 +350,23 @@ export function updateViz(visualization) {
     roughness: 0.35,
   });
   queryMesh = new THREE.Mesh(queryGeo, queryMat);
-  queryMesh.position.set(q.x, q.y, q.z);
+  queryMesh.position.set(qx, qy, qz);
   scene.add(queryMesh);
 
   const neighbors = visualization.neighbors || [];
   neighbors.forEach((n, idx) => {
     if (n.x == null) return;
-    const geo = new THREE.SphereGeometry(0.05, 18, 18);
+    const nx = n.x * SPREAD;
+    const ny = n.y * SPREAD;
+    const nz = n.z * SPREAD;
+    const geo = new THREE.SphereGeometry(NEIGHBOR_RADIUS, 18, 18);
     const mat = new THREE.MeshStandardMaterial({
       color: 0xffb347,
       emissive: 0x9a3f14,
       emissiveIntensity: 0.45 + idx * 0.05,
     });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(n.x, n.y, n.z);
+    mesh.position.set(nx, ny, nz);
     mesh.userData = {
       id: n.id,
       title: n.title,
@@ -363,8 +376,8 @@ export function updateViz(visualization) {
     neighborGroup.add(mesh);
 
     const lineGeo = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(q.x, q.y, q.z),
-      new THREE.Vector3(n.x, n.y, n.z),
+      new THREE.Vector3(qx, qy, qz),
+      new THREE.Vector3(nx, ny, nz),
     ]);
     const lineMat = new THREE.LineBasicMaterial({
       color: 0xe8c39e,
@@ -383,8 +396,8 @@ export function updateViz(visualization) {
       : labels || "";
   }
 
-  controls.target.set(q.x, q.y, q.z);
-  camera.position.set(q.x + 1.6, q.y + 1.1, q.z + 1.8);
+  controls.target.set(qx, qy, qz);
+  camera.position.set(qx + 2.0, qy + 1.35, qz + 2.2);
   controls.update();
 }
 
