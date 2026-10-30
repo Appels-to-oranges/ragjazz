@@ -10,15 +10,69 @@ const answerCard = document.getElementById("answer-card");
 const answerEl = document.getElementById("answer");
 const sourcesEl = document.getElementById("sources");
 const chunksEl = document.getElementById("chunks");
+const examplesEl = document.getElementById("examples");
+const shuffleBtn = document.getElementById("shuffle-examples");
+
+const EXAMPLE_POOL = [
+  { q: "What is a tritone substitution?", label: "Tritone substitution" },
+  { q: "How does stride piano differ from boogie-woogie?", label: "Stride vs boogie" },
+  { q: "Explain the ii-V-I progression", label: "ii–V–I" },
+  { q: "What is modal jazz?", label: "Modal jazz" },
+  { q: "What are Coltrane changes?", label: "Coltrane changes" },
+  { q: "How do altered dominant chords work?", label: "Altered dominants" },
+  { q: "What is a backdoor progression?", label: "Backdoor progression" },
+  { q: "Explain upper structure triads on piano", label: "Upper structures" },
+  { q: "What is quartal harmony?", label: "Quartal harmony" },
+  { q: "How do you voice a seventh chord on piano?", label: "Seventh chords" },
+  { q: "What is the chord-scale system?", label: "Chord-scale system" },
+  { q: "Explain the bebop scale", label: "Bebop scale" },
+  { q: "What makes a good jazz piano voicing?", label: "Jazz voicings" },
+  { q: "How does voice leading work in jazz harmony?", label: "Voice leading" },
+  { q: "What is a turnaround in jazz?", label: "Turnarounds" },
+  { q: "Explain rhythm changes", label: "Rhythm changes" },
+  { q: "What is a slash chord?", label: "Slash chords" },
+  { q: "How does the circle of fifths help with jazz keys?", label: "Circle of fifths" },
+  { q: "What is comping in jazz piano?", label: "Comping" },
+  { q: "Explain secondary dominants", label: "Secondary dominants" },
+  { q: "What is an extended chord?", label: "Extended chords" },
+  { q: "How is the blues scale used in jazz piano?", label: "Blues scale" },
+  { q: "What is a block chord?", label: "Block chords" },
+  { q: "Explain walking bass under a jazz piano left hand", label: "Walking bass" },
+];
+
+const EXAMPLES_SHOWN = 6;
+
+function shuffleInPlace(items) {
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+
+function renderExamples() {
+  if (!examplesEl) return;
+  const picks = shuffleInPlace([...EXAMPLE_POOL]).slice(0, EXAMPLES_SHOWN);
+  examplesEl.innerHTML = "";
+  picks.forEach((item) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.dataset.q = item.q;
+    btn.textContent = item.label;
+    btn.addEventListener("click", () => {
+      questionEl.value = item.q;
+      questionEl.focus();
+    });
+    examplesEl.appendChild(btn);
+  });
+}
+
+renderExamples();
+if (shuffleBtn) {
+  shuffleBtn.addEventListener("click", renderExamples);
+}
 
 initViz().catch(() => {});
-
-document.querySelectorAll(".examples button").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    questionEl.value = btn.dataset.q;
-    questionEl.focus();
-  });
-});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
