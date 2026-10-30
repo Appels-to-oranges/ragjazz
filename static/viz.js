@@ -271,15 +271,25 @@ function focusOn(q) {
   controls.update();
 }
 
+function hexFromColor(color) {
+  return color.getHex();
+}
+
 function paintHighlights(view) {
   const q = view?.query;
   if (!q) return;
   clearHighlights();
 
+  const neighbors = view.neighbors || [];
+  // Query takes the top neighbor's article color so topic matches stand out.
+  const queryColorIndex =
+    neighbors.find((n) => n.color_index != null)?.color_index ?? 0;
+  const queryColor = colorForIndex(queryColorIndex);
+
   const queryGeo = new THREE.SphereGeometry(0.07, 24, 24);
   const queryMat = new THREE.MeshStandardMaterial({
-    color: 0xfff1c9,
-    emissive: 0xc45c26,
+    color: queryColor.clone().offsetHSL(0, 0, 0.22),
+    emissive: queryColor,
     emissiveIntensity: 0.7,
     metalness: 0.2,
     roughness: 0.35,
@@ -288,13 +298,13 @@ function paintHighlights(view) {
   queryMesh.position.set(q.x, q.y, q.z);
   scene.add(queryMesh);
 
-  const neighbors = view.neighbors || [];
   neighbors.forEach((n, idx) => {
     if (n.x == null) return;
+    const articleColor = colorForIndex(n.color_index ?? 0);
     const geo = new THREE.SphereGeometry(0.05, 18, 18);
     const mat = new THREE.MeshStandardMaterial({
-      color: 0xffb347,
-      emissive: 0x9a3f14,
+      color: articleColor.clone().offsetHSL(0, 0, 0.12),
+      emissive: articleColor,
       emissiveIntensity: 0.45 + idx * 0.05,
     });
     const mesh = new THREE.Mesh(geo, mat);
@@ -306,9 +316,9 @@ function paintHighlights(view) {
       new THREE.Vector3(n.x, n.y, n.z),
     ]);
     const lineMat = new THREE.LineBasicMaterial({
-      color: 0xe8c39e,
+      color: hexFromColor(articleColor),
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.75,
     });
     lineGroup.add(new THREE.Line(lineGeo, lineMat));
   });

@@ -95,13 +95,24 @@ def build_pca_view(
     meta_cloud: Dict[str, Any],
 ) -> Dict[str, Any]:
     by_id = {p["id"]: p for p in meta_cloud.get("points", [])}
+    title_color = {
+        title: i for i, title in enumerate(meta_cloud.get("titles") or [])
+    }
     query = _project_query_pca(query_vec, meta_cloud)
     neighbors = []
     for base in _neighbor_base(hits):
         point = by_id.get(base["id"]) if base.get("id") else None
         entry = dict(base)
+        entry["color_index"] = title_color.get(base.get("title", ""), 0)
         if point:
-            entry.update({"x": point["x"], "y": point["y"], "z": point["z"]})
+            entry.update(
+                {
+                    "x": point["x"],
+                    "y": point["y"],
+                    "z": point["z"],
+                    "color_index": point.get("color_index", entry["color_index"]),
+                }
+            )
         neighbors.append(entry)
     return {
         "method": "pca",
