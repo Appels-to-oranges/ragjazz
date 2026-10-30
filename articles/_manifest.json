@@ -1,12 +1,36 @@
 {
-  "total_articles": 20,
-  "generated_at": "2026-06-17T01:54:50.219858+00:00",
+  "total_articles": 33,
+  "generated_at": "2026-10-30T01:29:21.612115+00:00",
   "articles": [
+    {
+      "title": "Altered chord",
+      "file": "altered_chord.json",
+      "url": "https://en.wikipedia.org/wiki/Altered_chord",
+      "summary_preview": "An altered chord is a chord that replaces one or more notes from the diatonic scale with a neighboring pitch from the ch..."
+    },
+    {
+      "title": "Altered scale",
+      "file": "altered_scale.json",
+      "url": "https://en.wikipedia.org/wiki/Altered_scale",
+      "summary_preview": "In jazz, the altered scale, altered dominant scale, or super-Locrian scale (Locrian ♭4 scale) is a seven-note scale that..."
+    },
+    {
+      "title": "Backdoor progression",
+      "file": "backdoor_progression.json",
+      "url": "https://en.wikipedia.org/wiki/Backdoor_progression",
+      "summary_preview": "In jazz and jazz harmony, the chord progression from iv7 to ♭VII7 to I (the tonic or \"home\" chord) has been nicknamed th..."
+    },
     {
       "title": "Bebop scale",
       "file": "bebop_scale.json",
       "url": "https://en.wikipedia.org/wiki/Bebop_scale",
       "summary_preview": "Bebop scale is a term referring to the practice of adding a note (typically a chromatic passing tone) to any common seve..."
+    },
+    {
+      "title": "Block chord",
+      "file": "block_chord.json",
+      "url": "https://en.wikipedia.org/wiki/Block_chord",
+      "summary_preview": "A block chord is a chord or voicing built directly below the melody either on the strong beats or to create a four-part ..."
     },
     {
       "title": "Blues scale",
@@ -19,6 +43,12 @@
       "file": "boogie-woogie.json",
       "url": "https://en.wikipedia.org/wiki/Boogie-woogie",
       "summary_preview": "Boogie-woogie also known as boogie is a genre of blues music that became popular during the late 1920s, but had already ..."
+    },
+    {
+      "title": "Chord-scale system",
+      "file": "chord-scale_system.json",
+      "url": "https://en.wikipedia.org/wiki/Chord-scale_system",
+      "summary_preview": "The chord-scale system is a method of matching, from a list of possible chords, a list of possible scales.  The system h..."
     },
     {
       "title": "Chord (music)",
@@ -39,16 +69,28 @@
       "summary_preview": "In music theory, the circle of fifths (sometimes also cycle of fifths) organizes the twelve pitch classes of the chromat..."
     },
     {
+      "title": "Coltrane changes",
+      "file": "coltrane_changes.json",
+      "url": "https://en.wikipedia.org/wiki/Coltrane_changes",
+      "summary_preview": "Coltrane changes (Coltrane Matrix or cycle, also known as chromatic third relations and multi-tonic changes) are a harmo..."
+    },
+    {
       "title": "Comping (jazz)",
       "file": "comping_jazz.json",
       "url": "https://en.wikipedia.org/wiki/Comping_(jazz)",
       "summary_preview": "In jazz, comping (an abbreviation of accompaniment; or possibly from the verb, to \"complement\") is the chords, rhythms, ..."
     },
     {
-      "title": "Ii-V-I progression",
+      "title": "Extended chord",
+      "file": "extended_chord.json",
+      "url": "https://en.wikipedia.org/wiki/Extended_chord",
+      "summary_preview": "In music, extended chords are tertian chords with notes beyond the seventh. Chords such as the Ninth, eleventh, and thir..."
+    },
+    {
+      "title": "Ii–V–I progression",
       "file": "ii-v-i_progression.json",
-      "url": "https://en.wikipedia.org/wiki/Ii-V-I_progression",
-      "summary_preview": "..."
+      "url": "https://en.wikipedia.org/wiki/Ii%E2%80%93V%E2%80%93I_progression",
+      "summary_preview": "The ii–V–I progression (\"two–five–one\", occasionally referred to as the ii–V–I turnaround) is a common cadential chord p..."
     },
     {
       "title": "Jazz harmony",
@@ -87,10 +129,10 @@
       "summary_preview": "A pentatonic scale is a musical scale with five notes per octave, in contrast to heptatonic scales, which have seven not..."
     },
     {
-      "title": "Piano blues",
-      "file": "piano_blues.json",
-      "url": "https://en.wikipedia.org/wiki/Piano_blues",
-      "summary_preview": "..."
+      "title": "Quartal and quintal harmony",
+      "file": "quartal_harmony.json",
+      "url": "https://en.wikipedia.org/wiki/Quartal_and_quintal_harmony",
+      "summary_preview": "In music, quartal harmony is the building of harmonic structures from the intervals of the perfect fourth, the augmented..."
     },
     {
       "title": "Rhythm changes",
@@ -99,10 +141,22 @@
       "summary_preview": "The Rhythm changes is a common 32-bar jazz chord progression derived from George Gershwin's \"I Got Rhythm\". The progress..."
     },
     {
-      "title": "Stride piano",
+      "title": "Secondary chord",
+      "file": "secondary_dominant.json",
+      "url": "https://en.wikipedia.org/wiki/Secondary_chord",
+      "summary_preview": "Secondary chords are a type of altered or borrowed chord, chords that are not part of the music piece's key. They are th..."
+    },
+    {
+      "title": "Seventh chord",
+      "file": "seventh_chord.json",
+      "url": "https://en.wikipedia.org/wiki/Seventh_chord",
+      "summary_preview": "A seventh chord is a chord consisting of a triad plus a note forming an interval of a seventh above the chord's root. Wh..."
+    },
+    {
+      "title": "Stride (music)",
       "file": "stride_piano.json",
-      "url": "https://en.wikipedia.org/wiki/Stride_piano",
-      "summary_preview": "..."
+      "url": "https://en.wikipedia.org/wiki/Stride_(music)",
+      "summary_preview": "Stride jazz piano, often shortened to stride, is a jazz piano style that arose from ragtime players. Prominent stride pi..."
     },
     {
       "title": "Tritone substitution",
@@ -111,16 +165,40 @@
       "summary_preview": "The tritone substitution is a common chord substitution found in both jazz and classical music. Where jazz is concerned,..."
     },
     {
+      "title": "Turnaround (music)",
+      "file": "turnaround_music.json",
+      "url": "https://en.wikipedia.org/wiki/Turnaround_(music)",
+      "summary_preview": "In jazz and blues music, a turnaround is a passage at the end of a section which leads to the next section. This next se..."
+    },
+    {
       "title": "Twelve-bar blues",
       "file": "twelve-bar_blues.json",
       "url": "https://en.wikipedia.org/wiki/Twelve-bar_blues",
       "summary_preview": "The twelve-bar blues (or blues changes) is one of the most prominent chord progressions in popular music. The blues prog..."
     },
     {
+      "title": "Upper structure",
+      "file": "upper_structure.json",
+      "url": "https://en.wikipedia.org/wiki/Upper_structure",
+      "summary_preview": "In jazz, the term upper structure or \"upper structure triad\" refers to a voicing approach developed by jazz pianists and..."
+    },
+    {
+      "title": "Voice leading",
+      "file": "voice_leading.json",
+      "url": "https://en.wikipedia.org/wiki/Voice_leading",
+      "summary_preview": "Voice leading (or part writing) is the linear progression of individual melodic lines (voices or parts) and their intera..."
+    },
+    {
       "title": "Voicing (music)",
       "file": "voicing_music.json",
       "url": "https://en.wikipedia.org/wiki/Voicing_(music)",
       "summary_preview": "In music theory, voicing refers to two closely related concepts:\n\nHow a musician or group distributes, or spaces, notes ..."
+    },
+    {
+      "title": "Bassline",
+      "file": "walking_bass.json",
+      "url": "https://en.wikipedia.org/wiki/Bassline",
+      "summary_preview": "Bassline (also known as a bass line or bass part) is the term used in many styles of music, such as blues, jazz, funk, d..."
     }
   ]
 }

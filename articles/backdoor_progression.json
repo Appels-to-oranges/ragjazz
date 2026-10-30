@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "title": "Backdoor progression",
+    "url": "https://en.wikipedia.org/wiki/Backdoor_progression",
+    "summary": "In jazz and jazz harmony, the chord progression from iv7 to ♭VII7 to I (the tonic or \"home\" chord) has been nicknamed the backdoor progression or the backdoor ii-V, as described by jazz theorist and author Jerry Coker.  This name derives from an assumption that the normal progression to the tonic, the ii-V-I turnaround (ii-V7 to I, see also authentic cadence) is, by inference, the \"front door\", a metaphor suggesting that this is the main route to the tonic.\nThe ♭VII7 chord, a pivot chord borrowed from the parallel minor of the current tonic major key, is a dominant seventh. Therefore, it can resolve to I; it is commonly preceded by IV going to iv, then ♭VII7, then I. In C major the dominant would be G7: (the notes GBDF), sharing two common tones with B♭7: (the notes B♭DFA♭). The notes A♭ and F serve as upper leading-tones back to G and E (when the chord moves to the tonic, C major), respectively, rather than B♮ and F serving as the lower and upper leading-tones to C and E in a conventional G7-C major (V7-I) cadence.\nA backdoor IV-V is also possible, moving from ♭VIM7 to ♭VII7 to I. This is also commonly known as a \"Mario Cadence\", after the end-of-level music in Super Mario Bros.\nAnother way to conceptualise the back door progression is with reference to the Axis System.",
+    "categories": [
+      "Category:Articles with short description",
+      "Category:CS1 errors: missing periodical",
+      "Category:Cadences",
+      "Category:Chord substitution",
+      "Category:Jazz terminology",
+      "Category:Major-key chord progressions",
+      "Category:Pages using the Phonos extension",
+      "Category:Short description is different from Wikidata"
+    ],
+    "links_count": 114,
+    "downloaded_at": "2026-10-30T01:27:37.221157+00:00",
+    "source": "wikipedia",
+    "language": "en"
+  },
+  "full_text": "In jazz and jazz harmony, the chord progression from iv7 to ♭VII7 to I (the tonic or \"home\" chord) has been nicknamed the backdoor progression or the backdoor ii-V, as described by jazz theorist and author Jerry Coker.  This name derives from an assumption that the normal progression to the tonic, the ii-V-I turnaround (ii-V7 to I, see also authentic cadence) is, by inference, the \"front door\", a metaphor suggesting that this is the main route to the tonic.\nThe ♭VII7 chord, a pivot chord borrowed from the parallel minor of the current tonic major key, is a dominant seventh. Therefore, it can resolve to I; it is commonly preceded by IV going to iv, then ♭VII7, then I. In C major the dominant would be G7: (the notes GBDF), sharing two common tones with B♭7: (the notes B♭DFA♭). The notes A♭ and F serve as upper leading-tones back to G and E (when the chord moves to the tonic, C major), respectively, rather than B♮ and F serving as the lower and upper leading-tones to C and E in a conventional G7-C major (V7-I) cadence.\nA backdoor IV-V is also possible, moving from ♭VIM7 to ♭VII7 to I. This is also commonly known as a \"Mario Cadence\", after the end-of-level music in Super Mario Bros.\nAnother way to conceptualise the back door progression is with reference to the Axis System.\n\nAlternative usage\nThe term \"Backdoor\" has been used by author Shelton Berg to refer to another entirely unrelated progression. The unexpected modulation created through the substitution of the highly similar Imaj9 for iii7 (in C: CEGBD and EGBD) at the end of the iiø7-V7 turnaround to a tonicized iii (iiø7/iii=♯ivø7, V7/iii=VII7, iii), arrives at 'home' (the temporary tonic of iii) through unexpected means, the 'back door' instead of the 'front door'(iii7, the individual notes EGBD, being entirely contained within Imaj9, the individual  notes of the C major chord, CEGBD, and the seventh of the dominant seventh chord still resolving downward). The resolution of a dominant seventh chord up a step (in this case a half-step, also called a semitone) is called a deceptive cadence.\n\nSee also\n♭VII-V7 cadence\nAxis System\n\n\n== References ==",
+  "sections": [
+    {
+      "title": "Alternative usage",
+      "depth": 0,
+      "text": "The term \"Backdoor\" has been used by author Shelton Berg to refer to another entirely unrelated progression. The unexpected modulation created through the substitution of the highly similar Imaj9 for iii7 (in C: CEGBD and EGBD) at the end of the iiø7-V7 turnaround to a tonicized iii (iiø7/iii=♯ivø7, V7/iii=VII7, iii), arrives at 'home' (the temporary tonic of iii) through unexpected means, the 'back door' instead of the 'front door'(iii7, the individual notes EGBD, being entirely contained within Imaj9, the individual  notes of the C major chord, CEGBD, and the seventh of the dominant seventh chord still resolving downward). The resolution of a dominant seventh chord up a step (in this case a half-step, also called a semitone) is called a deceptive cadence.",
+      "subsections": []
+    },
+    {
+      "title": "See also",
+      "depth": 0,
+      "text": "♭VII-V7 cadence\nAxis System\n\n\n== References ==",
+      "subsections": []
+    }
+  ]
+}

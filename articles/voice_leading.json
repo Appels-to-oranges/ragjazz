@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "title": "Voice leading",
+    "url": "https://en.wikipedia.org/wiki/Voice_leading",
+    "summary": "Voice leading (or part writing) is the linear progression of individual melodic lines (voices or parts) and their interaction with one another to create harmonies, typically in accordance with the principles of common-practice harmony and counterpoint. These principles include voices sounding smooth and independent, generally minimising movement to common tones as well as steps to the closest chord tone possible, therefore minimising leaps where possible. As a result, different voicings and inversions of chords may provide smoother voice leading.\nRigorous concern for voice leading is of greatest importance in common-practice music, although jazz and pop music also demonstrate attention to voice leading to varying degrees.\nThe style of voice leading will depend on the performing medium; for example, singing a large leap may be harder than playing it on piano.",
+    "categories": [
+      "Category:All Wikipedia articles needing clarification",
+      "Category:All articles to be expanded",
+      "Category:Arrangement",
+      "Category:Articles to be expanded from December 2024",
+      "Category:Articles with short description",
+      "Category:CS1 German-language sources (de)",
+      "Category:Pages using deprecated score attributes",
+      "Category:Pages using the Score extension",
+      "Category:Schenkerian analysis",
+      "Category:Short description matches Wikidata",
+      "Category:Tonality",
+      "Category:Voice leading",
+      "Category:Wikipedia articles needing clarification from October 2018"
+    ],
+    "links_count": 145,
+    "downloaded_at": "2026-10-30T01:27:32.038085+00:00",
+    "source": "wikipedia",
+    "language": "en"
+  },
+  "full_text": "Voice leading (or part writing) is the linear progression of individual melodic lines (voices or parts) and their interaction with one another to create harmonies, typically in accordance with the principles of common-practice harmony and counterpoint. These principles include voices sounding smooth and independent, generally minimising movement to common tones as well as steps to the closest chord tone possible, therefore minimising leaps where possible. As a result, different voicings and inversions of chords may provide smoother voice leading.\nRigorous concern for voice leading is of greatest importance in common-practice music, although jazz and pop music also demonstrate attention to voice leading to varying degrees.\nThe style of voice leading will depend on the performing medium; for example, singing a large leap may be harder than playing it on piano.\n\nExample\nThe score below shows the first four measures of the C-major prelude from J.S. Bach's The Well-Tempered Clavier, Book 1. Letter (a) presents the original score while (b) and (c) present reductions (simplified versions) intended to clarify the harmony and implied voice leading, respectively.\n\nIn (b), the same measures are presented as four block chords (with two inverted): I – II42 – V65 – I.\nIn (c), the four measures are presented as five horizontal voices identified by the direction of the stems, which are added even though the notes are actually whole notes, making them look like half notes. Notice that each voice consists of just three played notes due to the ties: from top to bottom, (1) E F — E; (2) C D — C; (3) G A G —; (4) E D — E; (5) C — B C. The four chords result from the fact that the voices do not move at the same time.\n\nHistory\nVoice leading developed as an independent concept when Heinrich Schenker stressed its importance in \"free counterpoint\", as opposed to strict counterpoint. He wrote:\n\nAll musical technique is derived from two basic ingredients: voice leading and the progression of scale degrees [i.e. of harmonic roots]. Of the two, voice leading is the earlier and the more original element.\nHe continued:\n\nThe theory of voice leading is to be presented here as a discipline unified in itself; that is, I shall show how [...] it everywhere maintains its inner unity.\nSchenker indeed did not present the rules of voice leading merely as contrapuntal rules, but showed how they are inseparable from the rules of harmony and how they form one of the most essential aspects of musical composition.\n\nCommon-practice conventions and pedagogy\nChord connection\nWestern musicians have tended to teach voice leading by focusing on connecting adjacent harmonies because that skill is foundational to meeting larger, structural objectives.\nCommon-practice conventions dictate that melodic lines should be smooth and independent. To be smooth, they should be primarily conjunct (stepwise), avoid leaps that are difficult to sing, approach and follow leaps with movement in the opposite direction, and correctly handle tendency tones (primarily, the leading-tone, but also the , which often moves down to ). To be independent, they should avoid parallel fifths and octaves.\nContrapuntal conventions likewise consider permitted or forbidden melodic intervals in individual parts, intervals between parts, the direction of the movement of the voices with respect to each other, etc. Whether dealing with counterpoint or harmony, these conventions emerge not only from a desire to create easy-to-sing parts but also from the constraints of tonal materials and from the objectives behind writing certain textures.\nThese conventions are discussed in more detail below.\n\nHarmonic roles\nAs the Renaissance gave way to the Baroque era in the 1600s, part writing reflected the increasing stratification of harmonic roles. This differentiation between outer and inner voices was an outgrowth of both tonality and homophony. In this new Baroque style, the outer voices took a commanding role in determining the flow of the music and tended to move more often by leaps. Inner voices tended to move stepwise or repeat common tones.\nA Schenkerian analysis perspective on these roles shifts the discussion somewhat from \"outer and inner voices\" to \"upper and bass voices\". Although the outer voices still play the dominant, form-defining role in this view, the leading soprano voice is often seen as a composite line that draws on the voice leadings in each of the upper voices of the imaginary continuo. Approaching harmony from a non-Schenkerian perspective, Dmitri Tymoczko nonetheless also demonstrates such \"3+1\" voice leading, where \"three voices articulate a strongly crossing-free voice leading between complete triads [...], while a fourth voice adds doublings,\" as a feature of tonal writing.\nNeo-Riemannian theory examines another facet of this principle. That theory decomposes movements from one chord to another into one or several \"parsimonious movements\"  between pitch classes instead of actual pitches (i.e., neglecting octave shifts). Such analysis shows the deeper continuity underneath surface disjunctions, as in the Bach example from BWV 941 hereby.\n\nJazz and pop music\nContemporary styles like jazz and pop treat voice-leading with more mixed importance than common-practice composition. For example, in Jazz Theory, Dariusz Terefenko writes that \"[a]t the surface level, jazz voice-leading conventions seem more relaxed than they are in common-practice music.\" Marc Schonbrun also states that while it is untrue that \"popular music has no voice leading in it, [...] the largest amount of popular music is simply conceived with chords as blocks of information, and melodies are layered on top of the chords.\"\n\nNotes\nReferences\nBibliography\nFurther reading\nMcAdams, S. and Bregman, A. (1979). \"Hearing musical streams\", in Computer Music Journal 3(4): 26–44 and in Roads, C. and Strawn, J., eds. (1985). Foundations of Computer Music, p. 658–698. Cambridge, Massachusetts: MIT Press.\n\"Voice Leading Overview\", Harmony.org.uk.\nVoice Leading: The Science Behind a Musical Art by David Huron, 2016, MIT Press\n\"Mathematical Musick – The Contrapuntal Formula of Dr. Thomas Campion\" by Jeff Lee, shipbrook.net",
+  "sections": [
+    {
+      "title": "Example",
+      "depth": 0,
+      "text": "The score below shows the first four measures of the C-major prelude from J.S. Bach's The Well-Tempered Clavier, Book 1. Letter (a) presents the original score while (b) and (c) present reductions (simplified versions) intended to clarify the harmony and implied voice leading, respectively.\n\nIn (b), the same measures are presented as four block chords (with two inverted): I – II42 – V65 – I.\nIn (c), the four measures are presented as five horizontal voices identified by the direction of the stems, which are added even though the notes are actually whole notes, making them look like half notes. Notice that each voice consists of just three played notes due to the ties: from top to bottom, (1) E F — E; (2) C D — C; (3) G A G —; (4) E D — E; (5) C — B C. The four chords result from the fact that the voices do not move at the same time.",
+      "subsections": []
+    },
+    {
+      "title": "History",
+      "depth": 0,
+      "text": "Voice leading developed as an independent concept when Heinrich Schenker stressed its importance in \"free counterpoint\", as opposed to strict counterpoint. He wrote:\n\nAll musical technique is derived from two basic ingredients: voice leading and the progression of scale degrees [i.e. of harmonic roots]. Of the two, voice leading is the earlier and the more original element.\nHe continued:\n\nThe theory of voice leading is to be presented here as a discipline unified in itself; that is, I shall show how [...] it everywhere maintains its inner unity.\nSchenker indeed did not present the rules of voice leading merely as contrapuntal rules, but showed how they are inseparable from the rules of harmony and how they form one of the most essential aspects of musical composition.",
+      "subsections": []
+    },
+    {
+      "title": "Common-practice conventions and pedagogy",
+      "depth": 0,
+      "text": "",
+      "subsections": [
+        {
+          "title": "Chord connection",
+          "depth": 1,
+          "text": "Western musicians have tended to teach voice leading by focusing on connecting adjacent harmonies because that skill is foundational to meeting larger, structural objectives.\nCommon-practice conventions dictate that melodic lines should be smooth and independent. To be smooth, they should be primarily conjunct (stepwise), avoid leaps that are difficult to sing, approach and follow leaps with movement in the opposite direction, and correctly handle tendency tones (primarily, the leading-tone, but also the , which often moves down to ). To be independent, they should avoid parallel fifths and octaves.\nContrapuntal conventions likewise consider permitted or forbidden melodic intervals in individual parts, intervals between parts, the direction of the movement of the voices with respect to each other, etc. Whether dealing with counterpoint or harmony, these conventions emerge not only from a desire to create easy-to-sing parts but also from the constraints of tonal materials and from the objectives behind writing certain textures.\nThese conventions are discussed in more detail below.",
+          "subsections": []
+        },
+        {
+          "title": "Harmonic roles",
+          "depth": 1,
+          "text": "As the Renaissance gave way to the Baroque era in the 1600s, part writing reflected the increasing stratification of harmonic roles. This differentiation between outer and inner voices was an outgrowth of both tonality and homophony. In this new Baroque style, the outer voices took a commanding role in determining the flow of the music and tended to move more often by leaps. Inner voices tended to move stepwise or repeat common tones.\nA Schenkerian analysis perspective on these roles shifts the discussion somewhat from \"outer and inner voices\" to \"upper and bass voices\". Although the outer voices still play the dominant, form-defining role in this view, the leading soprano voice is often seen as a composite line that draws on the voice leadings in each of the upper voices of the imaginary continuo. Approaching harmony from a non-Schenkerian perspective, Dmitri Tymoczko nonetheless also demonstrates such \"3+1\" voice leading, where \"three voices articulate a strongly crossing-free voice leading between complete triads [...], while a fourth voice adds doublings,\" as a feature of tonal writing.\nNeo-Riemannian theory examines another facet of this principle. That theory decomposes movements from one chord to another into one or several \"parsimonious movements\"  between pitch classes instead of actual pitches (i.e., neglecting octave shifts). Such analysis shows the deeper continuity underneath surface disjunctions, as in the Bach example from BWV 941 hereby.",
+          "subsections": []
+        }
+      ]
+    },
+    {
+      "title": "Jazz and pop music",
+      "depth": 0,
+      "text": "Contemporary styles like jazz and pop treat voice-leading with more mixed importance than common-practice composition. For example, in Jazz Theory, Dariusz Terefenko writes that \"[a]t the surface level, jazz voice-leading conventions seem more relaxed than they are in common-practice music.\" Marc Schonbrun also states that while it is untrue that \"popular music has no voice leading in it, [...] the largest amount of popular music is simply conceived with chords as blocks of information, and melodies are layered on top of the chords.\"",
+      "subsections": []
+    },
+    {
+      "title": "Notes",
+      "depth": 0,
+      "text": "",
+      "subsections": []
+    },
+    {
+      "title": "References",
+      "depth": 0,
+      "text": "",
+      "subsections": []
+    },
+    {
+      "title": "Bibliography",
+      "depth": 0,
+      "text": "",
+      "subsections": []
+    },
+    {
+      "title": "Further reading",
+      "depth": 0,
+      "text": "McAdams, S. and Bregman, A. (1979). \"Hearing musical streams\", in Computer Music Journal 3(4): 26–44 and in Roads, C. and Strawn, J., eds. (1985). Foundations of Computer Music, p. 658–698. Cambridge, Massachusetts: MIT Press.\n\"Voice Leading Overview\", Harmony.org.uk.\nVoice Leading: The Science Behind a Musical Art by David Huron, 2016, MIT Press\n\"Mathematical Musick – The Contrapuntal Formula of Dr. Thomas Campion\" by Jeff Lee, shipbrook.net",
+      "subsections": []
+    }
+  ]
+}

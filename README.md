@@ -1,33 +1,24 @@
 # RAG Jazz
 
-A jazz piano / music theory Q&A app grounded in 20 Wikipedia articles via retrieval-augmented generation.
+A jazz piano / music theory Q&A app grounded in a curated Wikipedia knowledge base via retrieval-augmented generation.
 
 Ask a question, get matching source passages, and (when configured) a natural-language answer from Groq's free tier or local Ollama. If the LLM is unavailable, the app falls back to retrieval-only.
 
-## Articles
+## Knowledge base
 
-| Topic | File |
-|---|---|
-| Jazz Piano | `jazz_piano.json` |
-| Jazz Harmony | `jazz_harmony.json` |
-| Chord (Music) | `chord_music.json` |
-| Chord Progression | `chord_progression.json` |
-| ii-V-I Progression | `ii-v-i_progression.json` |
-| Circle of Fifths | `circle_of_fifths.json` |
-| Blues Scale | `blues_scale.json` |
-| Bebop Scale | `bebop_scale.json` |
-| Jazz Improvisation | `jazz_improvisation.json` |
-| Voicing (Music) | `voicing_music.json` |
-| Comping (Jazz) | `comping_jazz.json` |
-| Stride Piano | `stride_piano.json` |
-| Boogie-Woogie | `boogie-woogie.json` |
-| Modal Jazz | `modal_jazz.json` |
-| Twelve-Bar Blues | `twelve-bar_blues.json` |
-| Tritone Substitution | `tritone_substitution.json` |
-| Jazz Scale | `jazz_scale.json` |
-| Pentatonic Scale | `pentatonic_scale.json` |
-| Rhythm Changes | `rhythm_changes.json` |
-| Piano Blues | `piano_blues.json` |
+**33 articles** (~810 chunks), focused on jazz piano theory:
+
+### Core piano & styles
+Jazz piano, Stride piano, Boogie-woogie, Comping (jazz), Block chord, Walking bass
+
+### Harmony & progressions
+Jazz harmony, Chord (music), Seventh chord, Extended chord, Chord progression, ii–V–I progression, Secondary dominant, Tritone substitution, Coltrane changes, Backdoor progression, Turnaround (music), Rhythm changes, Twelve-bar blues, Circle of fifths
+
+### Scales & improvisation
+Jazz scale, Bebop scale, Blues scale, Pentatonic scale, Altered scale, Modal jazz, Jazz improvisation, Chord-scale system
+
+### Voicing & voice leading
+Voicing (music), Voice leading, Upper structure, Quartal harmony, Altered chord
 
 ## Local setup
 
@@ -42,9 +33,11 @@ pip install -r requirements.txt
 python build_vectorstore.py
 ```
 
-`chunks.json` is already committed. Rebuild chunks only if you change articles:
+`chunks.json` is already committed. Rebuild after changing articles:
 
 ```bash
+python download_articles.py   # or download only new titles
+python rebuild_manifest.py
 python build_chunks.py
 python build_vectorstore.py
 ```
@@ -119,6 +112,6 @@ The image builds the Chroma index at build time.
 
 ## Other scripts
 
-- `download_articles.py` — Primary Wikipedia downloader
+- `download_articles.py` — Primary Wikipedia downloader (curated title list)
 - `download_remaining.py` — MediaWiki REST fallback
 - `rebuild_manifest.py` — Regenerates `articles/_manifest.json`

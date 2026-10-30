@@ -10,7 +10,10 @@ from datetime import datetime, timezone
 
 import wikipediaapi
 
+# Curated jazz-piano theory set: core harmony, scales, piano technique,
+# and a few advanced topics — comprehensive without adjacent fluff.
 ARTICLES = [
+    # Core / existing
     "Jazz piano",
     "Jazz harmony",
     "Chord (music)",
@@ -30,7 +33,25 @@ ARTICLES = [
     "Jazz scale",
     "Pentatonic scale",
     "Rhythm changes",
-    "Piano blues",
+    # Note: "Piano blues" redirects to the giant general Blues article — skip it;
+    # twelve-bar blues + blues scale already cover that ground.
+    # Expansion: harmony building blocks
+    "Seventh chord",
+    "Extended chord",
+    "Secondary dominant",
+    "Altered chord",
+    "Altered scale",
+    "Voice leading",
+    # Expansion: jazz-specific progressions & concepts
+    "Turnaround (music)",
+    "Coltrane changes",
+    "Backdoor progression",
+    "Chord-scale system",
+    # Expansion: piano voicing / texture
+    "Upper structure",
+    "Quartal harmony",
+    "Block chord",
+    "Walking bass",
 ]
 
 OUTPUT_DIR = "articles"
@@ -109,8 +130,8 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     wiki = wikipediaapi.Wikipedia(
+        user_agent="RAG_Jazz_Piano/1.0 (educational project; github.com/Appels-to-oranges/RAG_JAZZ)",
         language="en",
-        headers={"User-Agent": "RAG_Jazz_Piano/1.0 (educational project)"},
     )
 
     downloaded = []
