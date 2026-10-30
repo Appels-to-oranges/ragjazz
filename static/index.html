@@ -59,11 +59,7 @@
       <article class="viz-block">
         <div class="viz-header">
           <h2>Embedding space</h2>
-          <p class="viz-sub">Toggle between the stable PCA corpus map and a local cosine layout that pulls true neighbors near your query.</p>
-          <div class="viz-toggle" id="viz-toggle" hidden role="group" aria-label="Visualization mode">
-            <button type="button" data-view="pca" class="viz-toggle-btn is-active">Stable PCA</button>
-            <button type="button" data-view="cosine" class="viz-toggle-btn">Cosine local</button>
-          </div>
+          <p class="viz-sub">PCA map of the knowledge base. Bright point = your query; linked points = cosine nearest neighbors in 384-d (they may not look nearby in 3D).</p>
         </div>
         <div id="viz-canvas" class="viz-canvas" role="img" aria-label="3D embedding visualization"></div>
         <p id="viz-meta" class="viz-meta"></p>

@@ -26,12 +26,7 @@ Voicing (music), Voice leading, Upper structure, Quartal harmony, Altered chord
 Retrieval over-fetches candidates and diversifies by article/section so answers are less repetitive. Chunking uses 650-char chunks with 50-char overlap.
 
 ### Embedding-space visualization
-The UI includes a Three.js 3D view of the knowledge base.
-
-- **Stable PCA (default):** fixed corpus map from the initial vectorization (topic clusters)
-- **Cosine local:** MDS layout of the query + neighbors + ~100 sample context points, so spatial nearness matches cosine similarity
-
-Use the in-UI toggle after asking a question. Neighbors are always chosen by cosine similarity in 384-d. Rebuild the PCA overview with:
+The UI includes a Three.js PCA map of the knowledge base. Neighbors are chosen by cosine similarity in 384-d and highlighted on the map (3D distance is only an approximation). Rebuild with:
 
 ```bash
 python build_embeddings_3d.py

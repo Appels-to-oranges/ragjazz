@@ -1,9 +1,7 @@
 /**
  * 3D embedding viewer (Three.js).
- *
- * Toggle:
- *  - pca: stable global PCA cloud + query/neighbors in that space
- *  - cosine: local MDS layout so cosine neighbors sit near the query
+ * Stable PCA corpus cloud + query/neighbor highlights.
+ * Neighbors are selected by cosine similarity in 384-d (may look far in PCA).
  */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -11,14 +9,10 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const canvasHost = document.getElementById("viz-canvas");
 const metaEl = document.getElementById("viz-meta");
 const legendEl = document.getElementById("viz-legend");
-const toggleEl = document.getElementById("viz-toggle");
 
-let renderer, scene, camera, controls, cloudPoints, queryMesh, neighborGroup, lineGroup, contextPoints;
+let renderer, scene, camera, controls, cloudPoints, queryMesh, neighborGroup, lineGroup;
 let cloudData = null;
-let animationId = null;
 let resizeObserver = null;
-let activeView = "pca"; // pca | cosine
-let lastVisualization = null;
 
 const PALETTE = [
   "#c45c26", "#d4a017", "#2f6f6a", "#7a4e2d", "#3d5a80",
@@ -41,44 +35,13 @@ export async function initViz() {
     setupScene();
     drawGlobalCloud();
     drawLegend(cloudData.titles || []);
-    wireToggle();
     if (metaEl) {
       metaEl.textContent =
-        "Overview: stable PCA of the full corpus. Ask a question, then toggle Cosine local to pull true neighbors near the query.";
+        cloudData.note ||
+        "PCA map of the knowledge base. Ask a question to place your query and cosine neighbors.";
     }
   } catch (err) {
     if (metaEl) metaEl.textContent = err.message || "Visualization unavailable";
-  }
-}
-
-function wireToggle() {
-  if (!toggleEl || toggleEl.dataset.wired) return;
-  toggleEl.dataset.wired = "1";
-  toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const view = btn.dataset.view;
-      if (!view || view === activeView) return;
-      setActiveView(view);
-    });
-  });
-}
-
-function setActiveView(view) {
-  activeView = view;
-  if (toggleEl) {
-    toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
-      btn.classList.toggle("is-active", btn.dataset.view === view);
-    });
-  }
-  if (lastVisualization) {
-    renderActiveView(lastVisualization);
-  } else if (view === "pca") {
-    drawGlobalCloud();
-    clearHighlights();
-    resetCamera();
-    if (metaEl) {
-      metaEl.textContent = "Stable PCA overview of the knowledge base.";
-    }
   }
 }
 
@@ -130,7 +93,7 @@ function setupScene() {
   resizeObserver.observe(canvasHost);
 
   const animate = () => {
-    animationId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     controls.update();
     if (queryMesh) queryMesh.rotation.y += 0.012;
     renderer.render(scene, camera);
@@ -148,8 +111,6 @@ function disposePoints(obj) {
 function drawGlobalCloud() {
   if (!cloudData?.points?.length || !scene) return;
   disposePoints(cloudPoints);
-  disposePoints(contextPoints);
-  contextPoints = null;
 
   const n = cloudData.points.length;
   const positions = new Float32Array(n * 3);
@@ -180,46 +141,6 @@ function drawGlobalCloud() {
     })
   );
   scene.add(cloudPoints);
-}
-
-function drawLocalContext(points) {
-  disposePoints(cloudPoints);
-  cloudPoints = null;
-  disposePoints(contextPoints);
-
-  if (!points?.length) {
-    contextPoints = null;
-    return;
-  }
-
-  const n = points.length;
-  const positions = new Float32Array(n * 3);
-  const colors = new Float32Array(n * 3);
-  points.forEach((p, i) => {
-    positions[i * 3] = p.x;
-    positions[i * 3 + 1] = p.y;
-    positions[i * 3 + 2] = p.z;
-    const c = colorForIndex(p.color_index || 0);
-    colors[i * 3] = c.r;
-    colors[i * 3 + 1] = c.g;
-    colors[i * 3 + 2] = c.b;
-  });
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-  contextPoints = new THREE.Points(
-    geometry,
-    new THREE.PointsMaterial({
-      size: 0.04,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.35,
-      sizeAttenuation: true,
-    })
-  );
-  scene.add(contextPoints);
 }
 
 function drawLegend(titles) {
@@ -258,22 +179,12 @@ function clearHighlights() {
   }
 }
 
-function resetCamera() {
-  if (!controls || !camera) return;
-  controls.target.set(0, 0, 0);
-  camera.position.set(2.4, 1.6, 2.8);
-  controls.update();
-}
-
-function focusOn(q) {
-  controls.target.set(q.x, q.y, q.z);
-  camera.position.set(q.x + 1.6, q.y + 1.1, q.z + 1.8);
-  controls.update();
-}
-
-function paintHighlights(view) {
-  const q = view?.query;
+export function updateViz(visualization) {
+  if (!visualization?.available || !scene) return;
+  const q = visualization.query;
   if (!q) return;
+
+  drawGlobalCloud();
   clearHighlights();
 
   const queryGeo = new THREE.SphereGeometry(0.07, 24, 24);
@@ -288,7 +199,7 @@ function paintHighlights(view) {
   queryMesh.position.set(q.x, q.y, q.z);
   scene.add(queryMesh);
 
-  const neighbors = view.neighbors || [];
+  const neighbors = visualization.neighbors || [];
   neighbors.forEach((n, idx) => {
     if (n.x == null) return;
     const geo = new THREE.SphereGeometry(0.05, 18, 18);
@@ -317,44 +228,14 @@ function paintHighlights(view) {
     const labels = neighbors
       .map((n) => `${n.title} (${Math.round((n.similarity || 0) * 100)}%)`)
       .join(" · ");
-    metaEl.textContent = view.note
-      ? `${view.note}${labels ? ` Selected: ${labels}` : ""}`
+    metaEl.textContent = visualization.note
+      ? `${visualization.note}${labels ? ` Selected: ${labels}` : ""}`
       : labels || "";
   }
 
-  focusOn(q);
-}
-
-function renderActiveView(visualization) {
-  if (!visualization?.available || !scene) return;
-  const views = visualization.views || {};
-  const preferred = activeView === "pca" ? "pca" : "cosine";
-  const view = views[preferred] || views.cosine || views.pca;
-  if (!view) return;
-
-  if (preferred === "pca") {
-    drawGlobalCloud();
-  } else {
-    drawLocalContext(view.context || []);
-  }
-  paintHighlights(view);
-}
-
-export function updateViz(visualization) {
-  if (!visualization?.available) return;
-  lastVisualization = visualization;
-  activeView = visualization.default_view || "pca";
-
-  if (toggleEl) {
-    toggleEl.hidden = false;
-    toggleEl.querySelectorAll("[data-view]").forEach((btn) => {
-      const hasView = Boolean(visualization.views?.[btn.dataset.view]);
-      btn.disabled = !hasView;
-      btn.classList.toggle("is-active", btn.dataset.view === activeView);
-    });
-  }
-
-  renderActiveView(visualization);
+  controls.target.set(q.x, q.y, q.z);
+  camera.position.set(q.x + 1.6, q.y + 1.1, q.z + 1.8);
+  controls.update();
 }
 
 function escapeHtml(value) {
