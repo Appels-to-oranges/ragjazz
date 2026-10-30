@@ -28,8 +28,8 @@ Retrieval over-fetches candidates and diversifies by article/section so answers 
 ### Embedding-space visualization
 The UI includes a Three.js 3D view of the knowledge base.
 
-- **Stable PCA:** fixed corpus map from the initial vectorization (topic clusters)
-- **Cosine local:** MDS layout of the query + neighbors + sample context, so spatial nearness matches cosine similarity
+- **Stable PCA (default):** fixed corpus map from the initial vectorization (topic clusters)
+- **Cosine local:** MDS layout of the query + neighbors + ~100 sample context points, so spatial nearness matches cosine similarity
 
 Use the in-UI toggle after asking a question. Neighbors are always chosen by cosine similarity in 384-d. Rebuild the PCA overview with:
 

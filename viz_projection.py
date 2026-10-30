@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 EMBEDDINGS_3D_PATH = Path("embeddings_3d.json")
-CONTEXT_SAMPLE = 50
+CONTEXT_SAMPLE = 100
 RNG = random.Random(42)
 
 
@@ -251,7 +251,7 @@ def build_query_visualization(
     return {
         "available": True,
         "metric": "cosine",
-        "default_view": "cosine",
+        "default_view": "pca",
         "views": {
             "pca": pca_view,
             "cosine": cosine_view,
