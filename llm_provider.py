@@ -23,7 +23,7 @@ SYSTEM_PROMPT = textwrap.dedent("""\
     Cite your sources by referencing the article title and section in parentheses.
 """)
 
-DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
 DEFAULT_OLLAMA_MODEL = "llama3.2"
 
 

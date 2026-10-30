@@ -11,10 +11,13 @@ from pathlib import Path
 from threading import Lock
 from typing import Deque, Dict, Optional
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+
+load_dotenv()
 
 from llm_provider import generate_answer, resolve_provider
 from rag_core import (

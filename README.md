@@ -80,7 +80,7 @@ See `.env.example`.
 |---|---|
 | `LLM_PROVIDER` | `groq`, `ollama`, or `none` |
 | `GROQ_API_KEY` | Groq free-tier key |
-| `GROQ_MODEL` | Default `llama-3.1-8b-instant` |
+| `GROQ_MODEL` | Default `openai/gpt-oss-20b` |
 | `OLLAMA_MODEL` | Default `llama3.2` |
 | `RATE_LIMIT_RPM` | Per-IP anti-abuse limit (default 20) |
 
