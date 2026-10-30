@@ -39,6 +39,18 @@ SKIP_SECTIONS = {
     "Further reading", "Notes", "Bibliography",
 }
 
+
+def clean_chunk_text(text: str) -> str:
+    """Strip leading junk left by overlap splits (e.g. ' . The Coltrane...')."""
+    if not text:
+        return ""
+    cleaned = text.strip()
+    # Drop orphan punctuation / connectors at the start of a chunk.
+    cleaned = re.sub(r"^[\s\.\,\;\:\!\?\-\u2013\u2014\)\]\}]+", "", cleaned)
+    cleaned = cleaned.lstrip()
+    # If we stripped into lowercase mid-sentence debris, still fine to return.
+    return cleaned.strip()
+
 # The splitter tries each separator in order.  It picks the first one that
 # produces pieces under CHUNK_SIZE.  So it prefers paragraph breaks, then
 # line breaks, then sentence ends, then word boundaries, then character-level.
@@ -167,8 +179,11 @@ def chunk_article(article):
         intro_text = full_text.split("\n\n")[0] if full_text else ""
         if intro_text.strip():
             for i, chunk_text in enumerate(splitter.split_text(intro_text)):
+                cleaned = clean_chunk_text(chunk_text)
+                if not cleaned:
+                    continue
                 chunks.append({
-                    "text": chunk_text,
+                    "text": cleaned,
                     "metadata": {
                         "title": title,
                         "source_url": url,
@@ -180,8 +195,11 @@ def chunk_article(article):
         # Chunk each section independently so metadata stays accurate
         for sec_title, sec_text in intro_parts:
             for chunk_text in splitter.split_text(sec_text):
+                cleaned = clean_chunk_text(chunk_text)
+                if not cleaned:
+                    continue
                 chunks.append({
-                    "text": chunk_text,
+                    "text": cleaned,
                     "metadata": {
                         "title": title,
                         "source_url": url,
@@ -222,8 +240,11 @@ def chunk_article(article):
                 continue
             search_start = max(search_start, pos + 1)
 
+            cleaned = clean_chunk_text(chunk_text)
+            if not cleaned:
+                continue
             chunks.append({
-                "text": chunk_text,
+                "text": cleaned,
                 "metadata": {
                     "title": title,
                     "source_url": url,

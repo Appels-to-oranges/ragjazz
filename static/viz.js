@@ -29,7 +29,7 @@ const PALETTE = [
 
 // Mild visual scale-up: more breathing room + easier click targets.
 const SPREAD = 1.4;
-const CLOUD_POINT_SIZE = 0.05;
+const CLOUD_SPHERE_RADIUS = 0.028;
 const NEIGHBOR_RADIUS = 0.065;
 const QUERY_RADIUS = 0.09;
 
@@ -99,7 +99,6 @@ function setupScene() {
   scene.add(lineGroup);
 
   raycaster = new THREE.Raycaster();
-  raycaster.params.Points = { threshold: 0.09 };
 
   renderer.domElement.style.cursor = "pointer";
   renderer.domElement.addEventListener("pointerdown", onPointerDown);
@@ -166,7 +165,7 @@ async function handleClick(event) {
   if (cloudPoints) {
     const cloudHits = raycaster.intersectObject(cloudPoints, false);
     if (cloudHits.length) {
-      const idx = cloudHits[0].index;
+      const idx = cloudHits[0].instanceId;
       const point = cloudData?.points?.[idx];
       if (point?.id) {
         await showChunkTooltip(point.id, event, point);
@@ -255,33 +254,26 @@ function drawGlobalCloud() {
   disposePoints(cloudPoints);
 
   const n = cloudData.points.length;
-  const positions = new Float32Array(n * 3);
-  const colors = new Float32Array(n * 3);
-
-  cloudData.points.forEach((p, i) => {
-    positions[i * 3] = p.x * SPREAD;
-    positions[i * 3 + 1] = p.y * SPREAD;
-    positions[i * 3 + 2] = p.z * SPREAD;
-    const c = colorForIndex(p.color_index || 0);
-    colors[i * 3] = c.r;
-    colors[i * 3 + 1] = c.g;
-    colors[i * 3 + 2] = c.b;
+  const geometry = new THREE.SphereGeometry(CLOUD_SPHERE_RADIUS, 10, 10);
+  const material = new THREE.MeshStandardMaterial({
+    metalness: 0.15,
+    roughness: 0.55,
+    transparent: true,
+    opacity: 0.9,
   });
+  cloudPoints = new THREE.InstancedMesh(geometry, material, n);
+  cloudPoints.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
 
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-  cloudPoints = new THREE.Points(
-    geometry,
-    new THREE.PointsMaterial({
-      size: CLOUD_POINT_SIZE,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.55,
-      sizeAttenuation: true,
-    })
-  );
+  const matrix = new THREE.Matrix4();
+  const color = new THREE.Color();
+  cloudData.points.forEach((p, i) => {
+    matrix.setPosition(p.x * SPREAD, p.y * SPREAD, p.z * SPREAD);
+    cloudPoints.setMatrixAt(i, matrix);
+    color.copy(colorForIndex(p.color_index || 0));
+    cloudPoints.setColorAt(i, color);
+  });
+  cloudPoints.instanceMatrix.needsUpdate = true;
+  if (cloudPoints.instanceColor) cloudPoints.instanceColor.needsUpdate = true;
   scene.add(cloudPoints);
 }
 

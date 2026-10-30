@@ -106,13 +106,16 @@ def chunk_info(chunk_id: str, question: Optional[str] = None) -> Dict[str, Any]:
     if not fetched.get("ids"):
         raise KeyError(chunk_id)
 
+    from rag_core import clean_chunk_text
+
     meta = (fetched["metadatas"][0] or {}) if fetched.get("metadatas") else {}
     doc = (fetched["documents"][0] or "") if fetched.get("documents") else ""
+    preview_src = doc or (point or {}).get("preview") or ""
     info = {
         "id": chunk_id,
         "title": meta.get("title") or (point or {}).get("title") or "",
         "section": meta.get("section") or (point or {}).get("section") or "",
-        "preview": (point or {}).get("preview") or doc[:180],
+        "preview": clean_chunk_text(preview_src)[:180],
         "similarity": None,
     }
 

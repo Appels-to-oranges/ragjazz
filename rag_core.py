@@ -4,6 +4,7 @@ Shared retrieval helpers for CLI and web app.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import chromadb
@@ -15,6 +16,15 @@ DEFAULT_K = 5
 CANDIDATE_MULTIPLIER = 4
 MAX_PER_ARTICLE = 2
 MAX_PER_SECTION = 1
+
+
+def clean_chunk_text(text: str) -> str:
+    """Strip leading junk left by overlap splits (e.g. ' . The Coltrane...')."""
+    if not text:
+        return ""
+    cleaned = text.strip()
+    cleaned = re.sub(r"^[\s\.\,\;\:\!\?\-\u2013\u2014\)\]\}]+", "", cleaned)
+    return cleaned.strip()
 
 
 def get_collection(chroma_dir: str = CHROMA_DIR, name: str = COLLECTION_NAME):
@@ -142,7 +152,7 @@ def hits_to_chunks(hits: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         chunks.append(
             {
                 "id": hit.get("id"),
-                "text": hit["text"],
+                "text": clean_chunk_text(hit["text"]),
                 "title": m.get("title", ""),
                 "section": m.get("section", ""),
                 "source_url": m.get("source_url", ""),
