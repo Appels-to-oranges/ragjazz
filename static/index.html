@@ -8,6 +8,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
@@ -15,7 +23,7 @@
     <header class="brand">
       <p class="eyebrow">Jazz piano knowledge base</p>
       <h1>RAG Jazz</h1>
-      <p class="lede">Ask a theory question. Get an answer grounded in Wikipedia source passages.</p>
+      <p class="lede">Ask a theory question. Get an answer grounded in Wikipedia source passages — and see where your query lands in embedding space.</p>
     </header>
 
     <form id="ask-form" class="ask" autocomplete="off">
@@ -47,6 +55,17 @@
         <h2>Answer</h2>
         <div id="answer"></div>
       </article>
+
+      <article class="viz-block">
+        <div class="viz-header">
+          <h2>Embedding space</h2>
+          <p class="viz-sub">PCA projection of 384-d vectors. Bright point = your query. Linked points = cosine nearest neighbors.</p>
+        </div>
+        <div id="viz-canvas" class="viz-canvas" role="img" aria-label="3D embedding visualization"></div>
+        <p id="viz-meta" class="viz-meta"></p>
+        <div id="viz-legend" class="viz-legend"></div>
+      </article>
+
       <article class="sources-block">
         <h2>Sources</h2>
         <ul id="sources"></ul>
@@ -57,6 +76,6 @@
       </article>
     </section>
   </main>
-  <script src="/static/app.js"></script>
+  <script type="module" src="/static/app.js"></script>
 </body>
 </html>

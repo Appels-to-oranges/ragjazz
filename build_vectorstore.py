@@ -104,6 +104,15 @@ def main():
         print(f"  [{dist:.4f}] {meta['title']} > {meta['section']}")
         print(f"    {doc[:120]}...")
 
+    # Build the 3D PCA map used by the portfolio visualization.
+    try:
+        from build_embeddings_3d import main as build_3d
+
+        print("\n--- Building 3D embedding map ---")
+        build_3d()
+    except Exception as exc:  # noqa: BLE001
+        print(f"\n[warn] Could not build embeddings_3d.json: {exc}")
+
 
 if __name__ == "__main__":
     main()

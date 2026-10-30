@@ -25,6 +25,15 @@ Voicing (music), Voice leading, Upper structure, Quartal harmony, Altered chord
 
 Retrieval over-fetches candidates and diversifies by article/section so answers are less repetitive. Chunking uses 650-char chunks with 50-char overlap.
 
+### Embedding-space visualization
+The UI includes a Three.js 3D view of the knowledge base. Chunk vectors are reduced with **PCA** for display; neighbors are still selected by **cosine similarity** in the original 384-d space. Rebuild the map with:
+
+```bash
+python build_embeddings_3d.py
+```
+
+(`build_vectorstore.py` also builds it automatically.)
+
 ## Local setup
 
 ```bash

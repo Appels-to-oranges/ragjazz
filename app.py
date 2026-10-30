@@ -28,6 +28,11 @@ from rag_core import (
     hits_to_sources,
     retrieve,
 )
+from viz_projection import (
+    attach_neighbor_positions,
+    load_embeddings_3d,
+    project_query,
+)
 
 STATIC_DIR = Path(__file__).parent / "static"
 RATE_LIMIT_WINDOW_SEC = 60
@@ -53,6 +58,7 @@ class AskResponse(BaseModel):
     chunks: list
     sources: list
     notice: Optional[str] = None
+    visualization: Optional[dict] = None
 
 
 def _client_ip(request: Request) -> str:
@@ -94,6 +100,30 @@ def _get_collection():
     return _collection
 
 
+def _build_visualization(question: str, hits: list) -> Optional[dict]:
+    try:
+        query_point = project_query(question)
+        neighbors, note = attach_neighbor_positions(hits)
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "available": False,
+            "error": str(exc),
+        }
+    if not query_point:
+        return {
+            "available": False,
+            "error": note or "3D map unavailable",
+        }
+    return {
+        "available": True,
+        "method": "pca",
+        "metric": "cosine",
+        "note": note,
+        "query": query_point,
+        "neighbors": neighbors,
+    }
+
+
 @app.get("/")
 def index():
     return FileResponse(STATIC_DIR / "index.html")
@@ -108,10 +138,30 @@ def health():
     except HTTPException:
         count = 0
         ready = False
+    viz = load_embeddings_3d()
     return {
         "ok": ready,
         "chunks": count,
         "provider": resolve_provider(),
+        "viz_points": (viz or {}).get("count", 0),
+    }
+
+
+@app.get("/api/embeddings-3d")
+def embeddings_3d():
+    data = load_embeddings_3d()
+    if not data:
+        raise HTTPException(
+            status_code=404,
+            detail="embeddings_3d.json missing. Run: python build_embeddings_3d.py",
+        )
+    # Omit bulky PCA matrices from the browser payload.
+    return {
+        "method": data.get("method"),
+        "note": data.get("note"),
+        "count": data.get("count"),
+        "titles": data.get("titles", []),
+        "points": data.get("points", []),
     }
 
 
@@ -128,6 +178,7 @@ def ask(payload: AskRequest, request: Request):
     chunks = hits_to_chunks(hits)
     sources = hits_to_sources(hits)
     context = build_context_block(hits)
+    visualization = _build_visualization(question, hits)
 
     answer, error = generate_answer(question, context)
     if answer:
@@ -137,6 +188,7 @@ def ask(payload: AskRequest, request: Request):
             answer=answer,
             chunks=chunks,
             sources=sources,
+            visualization=visualization,
         )
 
     notice = None
@@ -152,6 +204,7 @@ def ask(payload: AskRequest, request: Request):
         chunks=chunks,
         sources=sources,
         notice=notice,
+        visualization=visualization,
     )
 
 

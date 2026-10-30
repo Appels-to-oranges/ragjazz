@@ -103,12 +103,21 @@ def retrieve(
 
     results = collection.query(query_texts=[question], n_results=fetch_k)
     hits = []
-    for doc, meta, dist in zip(
+    ids = results.get("ids") or [[]]
+    for doc, meta, dist, chunk_id in zip(
         results["documents"][0],
         results["metadatas"][0],
         results["distances"][0],
+        ids[0],
     ):
-        hits.append({"text": doc, "metadata": meta, "distance": dist})
+        hits.append(
+            {
+                "id": chunk_id,
+                "text": doc,
+                "metadata": meta,
+                "distance": dist,
+            }
+        )
 
     if diversify:
         return _diversify_hits(hits, k=k)
@@ -132,6 +141,7 @@ def hits_to_chunks(hits: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         m = hit["metadata"]
         chunks.append(
             {
+                "id": hit.get("id"),
                 "text": hit["text"],
                 "title": m.get("title", ""),
                 "section": m.get("section", ""),

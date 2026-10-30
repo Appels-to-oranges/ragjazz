@@ -188,11 +188,84 @@ button {
 
 .answer,
 .sources-block,
-.passages-block {
+.passages-block,
+.viz-block {
   background: rgba(243, 234, 215, 0.94);
   border-radius: 18px;
   padding: 1.25rem 1.35rem;
   border: 1px solid var(--line);
+}
+
+.viz-block {
+  background: linear-gradient(180deg, rgba(28, 22, 18, 0.96), rgba(18, 14, 11, 0.98));
+  color: var(--paper);
+  border-color: rgba(243, 234, 215, 0.12);
+}
+
+.viz-block h2 {
+  color: var(--paper);
+}
+
+.viz-header {
+  margin-bottom: 0.85rem;
+}
+
+.viz-sub {
+  margin: 0.35rem 0 0;
+  color: rgba(243, 234, 215, 0.72);
+  font-size: 0.92rem;
+}
+
+.viz-canvas {
+  width: 100%;
+  height: min(420px, 58vw);
+  min-height: 280px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(243, 234, 215, 0.12);
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(196, 92, 38, 0.18), transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(47, 111, 106, 0.16), transparent 50%),
+    #14100d;
+}
+
+.viz-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.viz-meta {
+  margin: 0.75rem 0 0;
+  font-size: 0.86rem;
+  color: rgba(243, 234, 215, 0.78);
+  line-height: 1.45;
+}
+
+.viz-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.viz-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: rgba(243, 234, 215, 0.75);
+}
+
+.viz-legend-item i {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.viz-legend-item.muted {
+  opacity: 0.65;
 }
 
 .result h2 {

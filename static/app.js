@@ -1,3 +1,5 @@
+import { initViz, updateViz } from "./viz.js";
+
 const form = document.getElementById("ask-form");
 const questionEl = document.getElementById("question");
 const askBtn = document.getElementById("ask-btn");
@@ -8,6 +10,8 @@ const answerCard = document.getElementById("answer-card");
 const answerEl = document.getElementById("answer");
 const sourcesEl = document.getElementById("sources");
 const chunksEl = document.getElementById("chunks");
+
+initViz().catch(() => {});
 
 document.querySelectorAll(".examples button").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -38,6 +42,8 @@ form.addEventListener("submit", async (event) => {
     }
 
     renderResult(data);
+    await initViz();
+    if (data.visualization) updateViz(data.visualization);
     statusEl.textContent = data.mode === "llm" ? "Answer ready" : "Passages ready";
   } catch (err) {
     statusEl.textContent = err.message || "Something went wrong";
