@@ -1,5 +1,3 @@
-import { initViz, updateViz } from "./viz.js";
-
 const form = document.getElementById("ask-form");
 const questionEl = document.getElementById("question");
 const askBtn = document.getElementById("ask-btn");
@@ -11,7 +9,6 @@ const answerEl = document.getElementById("answer");
 const sourcesEl = document.getElementById("sources");
 const chunksEl = document.getElementById("chunks");
 const examplesEl = document.getElementById("examples");
-const shuffleBtn = document.getElementById("shuffle-examples");
 
 const EXAMPLE_POOL = [
   { q: "What is a tritone substitution?", label: "Tritone substitution" },
@@ -40,7 +37,10 @@ const EXAMPLE_POOL = [
   { q: "Explain walking bass under a jazz piano left hand", label: "Walking bass" },
 ];
 
-const EXAMPLES_SHOWN = 6;
+const EXAMPLES_SHOWN = 4;
+
+let initViz = async () => {};
+let updateViz = () => {};
 
 function shuffleInPlace(items) {
   for (let i = items.length - 1; i > 0; i -= 1) {
@@ -67,12 +67,20 @@ function renderExamples() {
   });
 }
 
+// Examples must not depend on Three.js loading.
 renderExamples();
-if (shuffleBtn) {
-  shuffleBtn.addEventListener("click", renderExamples);
-}
 
-initViz().catch(() => {});
+import("./viz.js")
+  .then((mod) => {
+    initViz = mod.initViz;
+    updateViz = mod.updateViz;
+    return initViz();
+  })
+  .catch(() => {
+    if (statusEl && !statusEl.textContent) {
+      // Keep the page usable even if the viz bundle fails.
+    }
+  });
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -96,8 +104,12 @@ form.addEventListener("submit", async (event) => {
     }
 
     renderResult(data);
-    await initViz();
-    if (data.visualization) updateViz(data.visualization);
+    try {
+      await initViz();
+      if (data.visualization) updateViz(data.visualization);
+    } catch (_) {
+      // Visualization is optional.
+    }
     statusEl.textContent = data.mode === "llm" ? "Answer ready" : "Passages ready";
   } catch (err) {
     statusEl.textContent = err.message || "Something went wrong";

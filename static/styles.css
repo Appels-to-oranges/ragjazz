@@ -147,33 +147,12 @@ button {
   color: rgba(26, 20, 16, 0.65);
 }
 
-.examples-wrap {
-  margin: 1rem 0 0;
-  animation: rise 0.85s 0.12s ease both;
-}
-
 .examples {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-}
-
-.shuffle-examples {
-  appearance: none;
-  margin-top: 0.7rem;
-  border: 0;
-  background: transparent;
-  color: rgba(243, 234, 215, 0.7);
-  font: inherit;
-  font-size: 0.82rem;
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
-  cursor: pointer;
-  padding: 0;
-}
-
-.shuffle-examples:hover {
-  color: rgba(243, 234, 215, 0.95);
+  margin: 1rem 0 0;
+  animation: rise 0.85s 0.12s ease both;
 }
 
 .examples button {
