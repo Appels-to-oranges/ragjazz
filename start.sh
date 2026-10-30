@@ -1,4 +1,4 @@
-#!/sh
+#!/bin/sh
 set -e
 if [ ! -d "./chroma_db" ]; then
   echo "Building Chroma vector store..."
