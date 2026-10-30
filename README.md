@@ -117,15 +117,14 @@ Hosted on Railway as project `ragjazz` (service `web`). Custom domain: [ragjazz.
 - `RATE_LIMIT_RPM` (default `20`)
 - `PORT` (Railway sets this; currently `8080` — custom domains must target that port, not `8000`)
 
-#### Porkbun DNS
+#### Porkbun DNS (apex only — same pattern as WaveStation)
 
 | Type | Host | Answer |
 |---|---|---|
 | ALIAS (or CNAME flattening) | `@` | `cnmat109.up.railway.app` |
-| CNAME | `www` | Railway’s www target from the dashboard (or same edge host Railway shows) |
-| TXT | `_railway-verify` | value shown in Railway domain settings |
+| TXT | `_railway-verify` | value shown in Railway for `ragjazz.fyi` |
 
-Custom domain **target port must match the container listen port** (`8080` on Railway, not local `8000`).
+No separate `www` domain on Railway. Optional: Porkbun **URL forward** `www` → `https://ragjazz.fyi`. Custom domain **target port** must be `8080` (Railway’s `PORT`), not local `8000`.
 
 ## Project layout
 
