@@ -63,7 +63,8 @@ copy .env.example .env   # optional: set GROQ_API_KEY or LLM_PROVIDER=ollama
 uvicorn app:app --reload --port 8000
 ```
 
-Open http://127.0.0.1:8000
+Open http://127.0.0.1:8000  
+Plain-language explainer: http://127.0.0.1:8000/how-it-works
 
 ### CLI
 

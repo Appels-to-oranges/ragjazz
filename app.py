@@ -117,6 +117,11 @@ def index():
     return FileResponse(STATIC_DIR / "index.html")
 
 
+@app.get("/how-it-works")
+def how_it_works():
+    return FileResponse(STATIC_DIR / "how-it-works.html")
+
+
 @app.get("/api/health")
 def health():
     try:

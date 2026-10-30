@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How RAG Jazz works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <main class="stage guide">
+    <p class="eyebrow"><a class="text-link" href="/">← Back to RAG Jazz</a></p>
+    <header class="brand guide-brand">
+      <h1>How this works</h1>
+      <p class="lede">
+        A plain-language tour of the ideas behind RAG Jazz — written so a recruiter,
+        a curious musician, or anyone new to AI can follow along.
+      </p>
+    </header>
+
+    <nav class="guide-toc" aria-label="On this page">
+      <a href="#big-picture">Big picture</a>
+      <a href="#rag">What is RAG?</a>
+      <a href="#embeddings">Embeddings &amp; dimensions</a>
+      <a href="#cosine">Cosine similarity</a>
+      <a href="#pca">The 3D map (PCA)</a>
+      <a href="#pipeline">This project’s pipeline</a>
+      <a href="#ask-flow">What happens when you ask</a>
+    </nav>
+
+    <article class="guide-card" id="big-picture">
+      <h2>The big picture</h2>
+      <p>
+        Most chatbots answer from whatever they memorized during training.
+        That can sound confident and still be wrong — especially on niche topics
+        like jazz harmony.
+      </p>
+      <p>
+        <strong>RAG Jazz</strong> works differently. It keeps a small, curated library
+        of jazz-piano theory pages. When you ask a question, it first
+        <em>looks up</em> the most relevant passages from that library, then asks
+        an AI to explain those passages in friendly language — with citations.
+      </p>
+      <p>
+        Think of it like an open-book test: the model is allowed to answer, but
+        only while looking at the pages it just pulled from the book.
+      </p>
+    </article>
+
+    <article class="guide-card" id="rag">
+      <h2>What is RAG?</h2>
+      <p>
+        <strong>RAG</strong> stands for <strong>Retrieval-Augmented Generation</strong>.
+        Three words, three steps:
+      </p>
+      <ol>
+        <li><strong>Retrieval</strong> — find relevant text in a knowledge base.</li>
+        <li><strong>Augmented</strong> — attach that text to the user’s question.</li>
+        <li><strong>Generation</strong> — have a language model write an answer from it.</li>
+      </ol>
+      <p>
+        Why bother? Because retrieval keeps answers
+        <strong>grounded</strong> in sources you chose, instead of pure guessing.
+        If the library doesn’t cover a topic, the system can say so instead of
+        inventing a fake music-theory fact.
+      </p>
+    </article>
+
+    <article class="guide-card" id="embeddings">
+      <h2>Embeddings &amp; “hundreds of dimensions”</h2>
+      <p>
+        Computers don’t “understand” sentences the way people do. To compare meaning,
+        we convert each passage into a long list of numbers called an
+        <strong>embedding</strong> (or vector).
+      </p>
+      <p>
+        In this project, each chunk becomes a vector with
+        <strong>384 numbers</strong> (often called 384 dimensions), using a model named
+        <code>all-MiniLM-L6-v2</code>. Rough analogy:
+      </p>
+      <ul>
+        <li>A GPS point needs 2 numbers (latitude, longitude).</li>
+        <li>A point in a room needs 3 (x, y, z).</li>
+        <li>A “meaning point” here needs 384 — far too many to draw literally,
+            but excellent for measuring sameness of ideas.</li>
+      </ul>
+      <p>
+        Passages about similar ideas land near each other in that high-dimensional space.
+        “Tritone substitution” and “altered dominant” end up closer than
+        “tritone substitution” and “walking bass,” even if they share few exact words.
+      </p>
+    </article>
+
+    <article class="guide-card" id="cosine">
+      <h2>Cosine similarity (how “near” is measured)</h2>
+      <p>
+        Once everything is a vector, we need a score for “how related is A to B?”
+        This app uses <strong>cosine similarity</strong>.
+      </p>
+      <p>
+        Imagine two arrows starting from the same origin. Cosine similarity cares about
+        the <em>angle</em> between them, not how long they are:
+      </p>
+      <ul>
+        <li>Same direction → similarity near <strong>1</strong> (very related).</li>
+        <li>Right angle → near <strong>0</strong> (unrelated).</li>
+        <li>Opposite directions → near <strong>−1</strong> (rare in this setup).</li>
+      </ul>
+      <p>
+        When you ask a question, your question is also turned into a 384-number vector.
+        The system finds the library chunks whose vectors point most the same way —
+        those become the “matching passages,” and the UI shows the score as a percentage.
+      </p>
+      <p class="guide-note">
+        Important: retrieval happens in the full 384-d space. The colorful 3D map is only
+        a sketch for humans.
+      </p>
+    </article>
+
+    <article class="guide-card" id="pca">
+      <h2>The 3D map (PCA) — and what it is not</h2>
+      <p>
+        Humans can’t see 384 dimensions. So this site compresses the library into
+        <strong>3 dimensions</strong> with a method called
+        <strong>PCA</strong> (Principal Component Analysis).
+      </p>
+      <p>
+        PCA finds the “most informative camera angles” on the data — directions where
+        the points vary a lot — and projects everything into a 3D view you can orbit.
+        Colors group points by Wikipedia article.
+      </p>
+      <p>
+        That map is great for intuition (“these topics cluster over here”). It is
+        <strong>not</strong> a perfect picture of cosine neighbors. A chunk can be a
+        top match for your question in 384-d and still look far away on the PCA map.
+        That’s expected geometry, not a bug.
+      </p>
+      <p>
+        Click any sphere after asking a question to see its article, section, and
+        real cosine score versus your query.
+      </p>
+    </article>
+
+    <article class="guide-card" id="pipeline">
+      <h2>This project’s specific pipeline</h2>
+      <p>Here’s the concrete recipe behind RAG Jazz:</p>
+
+      <h3>1. Knowledge base</h3>
+      <ul>
+        <li><strong>~39 curated Wikipedia articles</strong> focused on jazz piano theory
+            (harmony, scales, voicings, progressions, foundations).</li>
+        <li>Chosen to be useful from beginner ideas (intervals, triads) through advanced
+            ones (Coltrane changes, upper structures) — without dumping unrelated mega-articles.</li>
+      </ul>
+
+      <h3>2. Chunking</h3>
+      <ul>
+        <li>Articles are split into short passages of about <strong>650 characters</strong>,
+            with <strong>50 characters of overlap</strong> so ideas aren’t cut awkwardly at boundaries.</li>
+        <li>That produced roughly <strong>800+ chunks</strong>, each tagged with article title,
+            section, and source URL.</li>
+        <li>Leading leftover punctuation from splits is cleaned so passages read naturally.</li>
+      </ul>
+
+      <h3>3. Indexing</h3>
+      <ul>
+        <li>Each chunk is embedded with <strong>MiniLM (384-d)</strong> and stored in
+            <strong>ChromaDB</strong>, configured for cosine distance.</li>
+        <li>A PCA projection of those embeddings is precomputed for the interactive 3D map.</li>
+      </ul>
+
+      <h3>4. Answering</h3>
+      <ul>
+        <li>The app retrieves the top matches (default <strong>5</strong>), with light
+            diversification so you don’t get five near-identical snippets from one section.</li>
+        <li>Those passages are sent to a free-tier language model on
+            <strong>Groq</strong> (default model: <code>openai/gpt-oss-20b</code>) with
+            instructions to answer like a friendly teacher and cite sources.</li>
+        <li>If the model is unavailable or rate-limited, you still get the retrieved passages —
+            the lookup step still works at $0.</li>
+      </ul>
+    </article>
+
+    <article class="guide-card" id="ask-flow">
+      <h2>What happens when you click Ask</h2>
+      <ol class="guide-steps">
+        <li>Your question is embedded into the same 384-d space as the library.</li>
+        <li>Cosine similarity ranks the closest chunks.</li>
+        <li>A short shortlist (diversified) becomes the open-book context.</li>
+        <li>The language model writes a grounded answer with light citations.</li>
+        <li>The 3D map places your query and highlights those neighbors; click points
+            to inspect titles, sections, and cosine scores.</li>
+      </ol>
+      <p>
+        That’s the whole loop: <strong>search by meaning → read the sources → explain clearly</strong>.
+      </p>
+      <p class="guide-cta">
+        <a class="guide-button" href="/">Try asking a question</a>
+      </p>
+    </article>
+
+    <p class="guide-footer">
+      Built as a portfolio piece by Payson Carpenter —
+      jazz piano theory meets practical retrieval systems.
+    </p>
+  </main>
+</body>
+</html>

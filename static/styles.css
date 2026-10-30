@@ -85,6 +85,141 @@ body {
   font-size: 1.05rem;
 }
 
+.brand-links {
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.65rem;
+  align-items: baseline;
+}
+
+.brand-links-note {
+  color: rgba(243, 234, 215, 0.55);
+  font-size: 0.86rem;
+}
+
+.text-link {
+  color: #e8b089;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.text-link:hover {
+  color: #fff1c9;
+}
+
+.guide {
+  width: min(760px, calc(100% - 2rem));
+  padding-top: 3rem;
+}
+
+.guide-brand h1 {
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+}
+
+.guide-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  margin: 0 0 1.5rem;
+}
+
+.guide-toc a {
+  color: rgba(243, 234, 215, 0.78);
+  text-decoration: none;
+  font-size: 0.86rem;
+  border-bottom: 1px solid rgba(232, 176, 137, 0.35);
+}
+
+.guide-toc a:hover {
+  color: #fff1c9;
+}
+
+.guide-card {
+  background: rgba(243, 234, 215, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.35rem 1.4rem 1.45rem;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+
+.guide-card h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.guide-card h3 {
+  margin: 1.1rem 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+
+.guide-card p,
+.guide-card li {
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.guide-card p {
+  margin: 0 0 0.75rem;
+}
+
+.guide-card p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-card ol,
+.guide-card ul {
+  margin: 0 0 0.85rem;
+  padding-left: 1.2rem;
+}
+
+.guide-card code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  background: rgba(26, 20, 16, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+}
+
+.guide-note {
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(196, 92, 38, 0.1);
+  border: 1px solid rgba(196, 92, 38, 0.22);
+}
+
+.guide-steps li {
+  margin-bottom: 0.35rem;
+}
+
+.guide-cta {
+  margin-top: 1rem !important;
+}
+
+.guide-button {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.7rem 1.2rem;
+  background: var(--brass);
+  color: #fff8ef !important;
+  text-decoration: none !important;
+  font-weight: 600;
+}
+
+.guide-button:hover {
+  background: var(--brass-deep);
+}
+
+.guide-footer {
+  margin: 1.5rem 0 0;
+  color: rgba(243, 234, 215, 0.6);
+  font-size: 0.88rem;
+}
+
 .ask {
   background: var(--mist);
   backdrop-filter: blur(10px);
