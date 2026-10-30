@@ -217,6 +217,7 @@ button {
 }
 
 .viz-canvas {
+  position: relative;
   width: 100%;
   height: min(420px, 58vw);
   min-height: 280px;
@@ -233,6 +234,48 @@ button {
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+
+.viz-tooltip {
+  position: absolute;
+  z-index: 5;
+  max-width: 240px;
+  padding: 0.7rem 0.8rem;
+  border-radius: 12px;
+  background: rgba(20, 16, 13, 0.94);
+  border: 1px solid rgba(243, 234, 215, 0.18);
+  color: rgba(243, 234, 215, 0.92);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.viz-tooltip strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 0.15rem;
+}
+
+.viz-tip-section,
+.viz-tip-score {
+  display: block;
+  color: rgba(243, 234, 215, 0.7);
+}
+
+.viz-tip-score {
+  color: #e8b089;
+  margin-top: 0.2rem;
+  font-weight: 600;
+}
+
+.viz-tooltip p {
+  margin: 0.45rem 0 0;
+  color: rgba(243, 234, 215, 0.78);
+}
+
+.viz-tooltip.is-loading {
+  opacity: 0.8;
 }
 
 .viz-meta {

@@ -1,7 +1,7 @@
 /**
  * 3D embedding viewer (Three.js).
  * Stable PCA corpus cloud + query/neighbor highlights.
- * Neighbors are selected by cosine similarity in 384-d (may look far in PCA).
+ * Click a point for article/section + cosine score vs the current query.
  */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -9,10 +9,16 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const canvasHost = document.getElementById("viz-canvas");
 const metaEl = document.getElementById("viz-meta");
 const legendEl = document.getElementById("viz-legend");
+const tooltipEl = document.getElementById("viz-tooltip");
 
 let renderer, scene, camera, controls, cloudPoints, queryMesh, neighborGroup, lineGroup;
 let cloudData = null;
 let resizeObserver = null;
+let raycaster = null;
+let pointer = new THREE.Vector2();
+let lastQuestion = "";
+let neighborById = new Map();
+let pointerDown = null;
 
 const PALETTE = [
   "#c45c26", "#d4a017", "#2f6f6a", "#7a4e2d", "#3d5a80",
@@ -37,8 +43,7 @@ export async function initViz() {
     drawLegend(cloudData.titles || []);
     if (metaEl) {
       metaEl.textContent =
-        cloudData.note ||
-        "PCA map of the knowledge base. Ask a question to place your query and cosine neighbors.";
+        "PCA map of the knowledge base. Ask a question, then click any point for its topic and cosine score.";
     }
   } catch (err) {
     if (metaEl) metaEl.textContent = err.message || "Visualization unavailable";
@@ -59,8 +64,13 @@ function setupScene() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(width, height, false);
   renderer.setClearColor(0x000000, 0);
-  canvasHost.innerHTML = "";
+  // Keep tooltip as a sibling overlay; only replace/append the canvas.
+  const existingTooltip = tooltipEl;
+  canvasHost.querySelectorAll("canvas").forEach((c) => c.remove());
   canvasHost.appendChild(renderer.domElement);
+  if (existingTooltip && existingTooltip.parentElement !== canvasHost) {
+    canvasHost.appendChild(existingTooltip);
+  }
 
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
@@ -82,6 +92,16 @@ function setupScene() {
   scene.add(neighborGroup);
   scene.add(lineGroup);
 
+  raycaster = new THREE.Raycaster();
+  raycaster.params.Points = { threshold: 0.06 };
+
+  renderer.domElement.style.cursor = "pointer";
+  renderer.domElement.addEventListener("pointerdown", onPointerDown);
+  renderer.domElement.addEventListener("pointerup", onPointerUp);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") hideTooltip();
+  });
+
   resizeObserver = new ResizeObserver(() => {
     if (!renderer || !camera) return;
     const w = canvasHost.clientWidth;
@@ -99,6 +119,122 @@ function setupScene() {
     renderer.render(scene, camera);
   };
   animate();
+}
+
+function onPointerDown(event) {
+  pointerDown = { x: event.clientX, y: event.clientY };
+}
+
+async function onPointerUp(event) {
+  if (!pointerDown) return;
+  const dx = event.clientX - pointerDown.x;
+  const dy = event.clientY - pointerDown.y;
+  pointerDown = null;
+  // Ignore drags so orbiting doesn't open tooltips.
+  if (Math.hypot(dx, dy) > 4) return;
+  await handleClick(event);
+}
+
+function setPointerFromEvent(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+}
+
+async function handleClick(event) {
+  if (!raycaster || !camera) return;
+  setPointerFromEvent(event);
+  raycaster.setFromCamera(pointer, camera);
+
+  // Prefer neighbor spheres, then corpus points.
+  const neighborHits = raycaster.intersectObjects(neighborGroup.children, false);
+  if (neighborHits.length) {
+    const mesh = neighborHits[0].object;
+    const chunkId = mesh.userData?.id;
+    if (chunkId) {
+      await showChunkTooltip(chunkId, event, mesh.userData);
+      return;
+    }
+  }
+
+  if (cloudPoints) {
+    const cloudHits = raycaster.intersectObject(cloudPoints, false);
+    if (cloudHits.length) {
+      const idx = cloudHits[0].index;
+      const point = cloudData?.points?.[idx];
+      if (point?.id) {
+        await showChunkTooltip(point.id, event, point);
+        return;
+      }
+    }
+  }
+
+  hideTooltip();
+}
+
+async function showChunkTooltip(chunkId, event, fallback = {}) {
+  if (!tooltipEl) return;
+  tooltipEl.hidden = false;
+  tooltipEl.classList.add("is-loading");
+  tooltipEl.innerHTML = `<strong>${escapeHtml(fallback.title || "Loading…")}</strong>`;
+  placeTooltip(event);
+
+  const cached = neighborById.get(chunkId);
+  try {
+    const res = await fetch("/api/chunk-info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: chunkId,
+        question: lastQuestion || null,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Could not load chunk");
+    if (data.similarity == null && cached?.similarity != null) {
+      data.similarity = cached.similarity;
+    }
+    renderTooltip(data);
+  } catch (err) {
+    renderTooltip({
+      title: fallback.title || cached?.title || "Chunk",
+      section: fallback.section || cached?.section || "",
+      preview: fallback.preview || err.message,
+      similarity: cached?.similarity ?? null,
+    });
+  }
+}
+
+function renderTooltip(data) {
+  if (!tooltipEl) return;
+  tooltipEl.classList.remove("is-loading");
+  const sim =
+    data.similarity == null
+      ? lastQuestion
+        ? "Cosine: —"
+        : "Ask a question to see cosine score"
+      : `Cosine: ${Math.round(data.similarity * 100)}%`;
+  tooltipEl.innerHTML = `
+    <strong>${escapeHtml(data.title || "Untitled")}</strong>
+    <span class="viz-tip-section">${escapeHtml(data.section || "")}</span>
+    <span class="viz-tip-score">${escapeHtml(sim)}</span>
+    <p>${escapeHtml(data.preview || "")}</p>
+  `;
+}
+
+function placeTooltip(event) {
+  if (!tooltipEl) return;
+  const rect = canvasHost.getBoundingClientRect();
+  const x = event.clientX - rect.left + 12;
+  const y = event.clientY - rect.top + 12;
+  tooltipEl.style.left = `${Math.min(x, rect.width - 220)}px`;
+  tooltipEl.style.top = `${Math.min(y, rect.height - 120)}px`;
+}
+
+function hideTooltip() {
+  if (!tooltipEl) return;
+  tooltipEl.hidden = true;
+  tooltipEl.classList.remove("is-loading");
 }
 
 function disposePoints(obj) {
@@ -184,6 +320,14 @@ export function updateViz(visualization) {
   const q = visualization.query;
   if (!q) return;
 
+  lastQuestion = visualization.question || "";
+  neighborById = new Map(
+    (visualization.neighbors || [])
+      .filter((n) => n.id)
+      .map((n) => [n.id, n])
+  );
+  hideTooltip();
+
   drawGlobalCloud();
   clearHighlights();
 
@@ -210,6 +354,12 @@ export function updateViz(visualization) {
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(n.x, n.y, n.z);
+    mesh.userData = {
+      id: n.id,
+      title: n.title,
+      section: n.section,
+      similarity: n.similarity,
+    };
     neighborGroup.add(mesh);
 
     const lineGeo = new THREE.BufferGeometry().setFromPoints([

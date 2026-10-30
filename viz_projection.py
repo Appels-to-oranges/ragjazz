@@ -81,10 +81,49 @@ def build_query_visualization(
         "available": True,
         "method": "pca",
         "metric": "cosine",
+        "question": question,
         "note": (
             "PCA overview of the corpus. Neighbors are chosen by cosine similarity "
-            "in 384-d embedding space — they may not look nearby in this 3D projection."
+            "in 384-d embedding space — they may not look nearby in this 3D projection. "
+            "Click a point for article, section, and cosine score."
         ),
         "query": query,
         "neighbors": neighbors,
     }
+
+
+def chunk_info(chunk_id: str, question: Optional[str] = None) -> Dict[str, Any]:
+    """Return chunk metadata and optional cosine similarity to a question."""
+    data = load_embeddings_3d()
+    point = None
+    if data:
+        point = next((p for p in data.get("points", []) if p.get("id") == chunk_id), None)
+
+    from rag_core import get_collection
+
+    collection = get_collection()
+    fetched = collection.get(ids=[chunk_id], include=["documents", "metadatas", "embeddings"])
+    if not fetched.get("ids"):
+        raise KeyError(chunk_id)
+
+    meta = (fetched["metadatas"][0] or {}) if fetched.get("metadatas") else {}
+    doc = (fetched["documents"][0] or "") if fetched.get("documents") else ""
+    info = {
+        "id": chunk_id,
+        "title": meta.get("title") or (point or {}).get("title") or "",
+        "section": meta.get("section") or (point or {}).get("section") or "",
+        "preview": (point or {}).get("preview") or doc[:180],
+        "similarity": None,
+    }
+
+    q = (question or "").strip()
+    embeddings = fetched.get("embeddings")
+    if q and embeddings is not None and len(embeddings) > 0:
+        chunk_vec = np.asarray(embeddings[0], dtype=np.float64)
+        query_vec = embed_texts([q])[0]
+        denom = float(np.linalg.norm(chunk_vec) * np.linalg.norm(query_vec))
+        if denom > 0:
+            info["similarity"] = round(float(np.dot(chunk_vec, query_vec) / denom), 4)
+
+    return info
+

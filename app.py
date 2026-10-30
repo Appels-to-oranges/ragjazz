@@ -28,7 +28,7 @@ from rag_core import (
     hits_to_sources,
     retrieve,
 )
-from viz_projection import build_query_visualization, load_embeddings_3d
+from viz_projection import build_query_visualization, chunk_info, load_embeddings_3d
 
 STATIC_DIR = Path(__file__).parent / "static"
 RATE_LIMIT_WINDOW_SEC = 60
@@ -45,6 +45,11 @@ _rate_buckets: Dict[str, Deque[float]] = defaultdict(deque)
 class AskRequest(BaseModel):
     question: str = Field(..., min_length=2, max_length=500)
     k: int = Field(DEFAULT_K, ge=1, le=10)
+
+
+class ChunkInfoRequest(BaseModel):
+    id: str = Field(..., min_length=1, max_length=120)
+    question: Optional[str] = Field(None, max_length=500)
 
 
 class AskResponse(BaseModel):
@@ -146,6 +151,17 @@ def embeddings_3d():
         "titles": data.get("titles", []),
         "points": data.get("points", []),
     }
+
+
+@app.post("/api/chunk-info")
+def api_chunk_info(payload: ChunkInfoRequest, request: Request):
+    _enforce_rate_limit(_client_ip(request))
+    try:
+        return chunk_info(payload.id, payload.question)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Chunk not found") from None
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @app.post("/api/ask", response_model=AskResponse)

@@ -59,9 +59,11 @@
       <article class="viz-block">
         <div class="viz-header">
           <h2>Embedding space</h2>
-          <p class="viz-sub">PCA map of the knowledge base. Bright point = your query; linked points = cosine nearest neighbors in 384-d (they may not look nearby in 3D).</p>
+          <p class="viz-sub">PCA map of the knowledge base. Click any point for its article, section, and cosine score vs your query.</p>
         </div>
-        <div id="viz-canvas" class="viz-canvas" role="img" aria-label="3D embedding visualization"></div>
+        <div id="viz-canvas" class="viz-canvas" role="img" aria-label="3D embedding visualization">
+          <div id="viz-tooltip" class="viz-tooltip" hidden></div>
+        </div>
         <p id="viz-meta" class="viz-meta"></p>
         <div id="viz-legend" class="viz-legend"></div>
       </article>
