@@ -115,18 +115,17 @@ Hosted on Railway as project `ragjazz` (service `web`). Custom domain: [ragjazz.
 - `LLM_PROVIDER=groq` (or leave unset to auto-detect from the key)
 - `GROQ_MODEL` (default `openai/gpt-oss-20b`)
 - `RATE_LIMIT_RPM` (default `20`)
-- `PORT` (provided by the host)
+- `PORT` (Railway sets this; currently `8080` — custom domains must target that port, not `8000`)
 
-#### Porkbun DNS (apex)
-
-Railway expects:
+#### Porkbun DNS
 
 | Type | Host | Answer |
 |---|---|---|
 | ALIAS (or CNAME flattening) | `@` | `cnmat109.up.railway.app` |
-| TXT | `_railway-verify` | `railway-verify=d52b5fc7b79e4a0e953dfeaee9063fdcc1164f6e7165f130c6558be9b30205f6` |
+| CNAME | `www` | Railway’s www target from the dashboard (or same edge host Railway shows) |
+| TXT | `_railway-verify` | value shown in Railway domain settings |
 
-Remove Porkbun parking `A` records for `@` so they don't override the ALIAS. Optional: `www` CNAME → `cnmat109.up.railway.app` (add `www.ragjazz.fyi` in Railway too).
+Custom domain **target port must match the container listen port** (`8080` on Railway, not local `8000`).
 
 ## Project layout
 
