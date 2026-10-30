@@ -7,3 +7,5 @@ venv/
 dist/
 build/
 chroma_db/
+.DS_Store
+*.log

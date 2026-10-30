@@ -1,6 +1,8 @@
-# RAG Jazz Piano
+# RAG Jazz
 
-A knowledge base of 20 Wikipedia articles on jazz piano and piano music theory, structured for Retrieval-Augmented Generation (RAG).
+A jazz piano / music theory Q&A app grounded in 20 Wikipedia articles via retrieval-augmented generation.
+
+Ask a question, get matching source passages, and (when configured) a natural-language answer from Groq's free tier or local Ollama. If the LLM is unavailable, the app falls back to retrieval-only.
 
 ## Articles
 
@@ -27,79 +29,86 @@ A knowledge base of 20 Wikipedia articles on jazz piano and piano music theory, 
 | Rhythm Changes | `rhythm_changes.json` |
 | Piano Blues | `piano_blues.json` |
 
-## Article JSON Structure
-
-Each article file contains:
-
-```json
-{
-  "metadata": {
-    "title": "...",
-    "url": "https://en.wikipedia.org/wiki/...",
-    "summary": "...",
-    "categories": ["Category:...", "..."],
-    "downloaded_at": "2026-06-17T...",
-    "source": "wikipedia",
-    "language": "en"
-  },
-  "full_text": "...",
-  "sections": [
-    {
-      "title": "Section Name",
-      "depth": 0,
-      "text": "...",
-      "subsections": [...]
-    }
-  ]
-}
-```
-
-## Setup
+## Local setup
 
 ```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
+
 pip install -r requirements.txt
-```
-
-## RAG Pipeline
-
-### 1. Build chunks
-
-Splits all articles into ~500-character overlapping chunks with metadata (title, section, source URL).
-
-```bash
-python build_chunks.py
-```
-
-Outputs `chunks.json` (704 chunks across 20 articles).
-
-### 2. Build vector store
-
-Embeds all chunks using `all-MiniLM-L6-v2` and stores them in a local ChromaDB database.
-
-```bash
 python build_vectorstore.py
 ```
 
-Persists to `./chroma_db/`.
+`chunks.json` is already committed. Rebuild chunks only if you change articles:
 
-### 3. Query
+```bash
+python build_chunks.py
+python build_vectorstore.py
+```
 
-Retrieves relevant chunks and generates an answer using a local Ollama LLM.
+### Web app
+
+```bash
+copy .env.example .env   # optional: set GROQ_API_KEY or LLM_PROVIDER=ollama
+uvicorn app:app --reload --port 8000
+```
+
+Open http://127.0.0.1:8000
+
+### CLI
 
 ```bash
 python query.py "What is a tritone substitution?"
-python query.py --no-llm "circle of fifths"       # retrieval only
-python query.py --model mistral "stride piano"     # use a different model
+python query.py --no-llm "circle of fifths"
+python query.py --model mistral "stride piano"
 ```
 
-Requires [Ollama](https://ollama.com/download) with a pulled model:
+Local LLM answers require [Ollama](https://ollama.com/download):
 
 ```bash
 ollama pull llama3.2
 ```
 
-## Other Scripts
+## Environment
 
-- `download_articles.py` — Primary downloader using `wikipedia-api`
-- `download_remaining.py` — Fallback downloader using the MediaWiki REST API directly (handles rate limits)
-- `rebuild_manifest.py` — Regenerates `articles/_manifest.json` from all article files
+See `.env.example`.
+
+| Variable | Purpose |
+|---|---|
+| `LLM_PROVIDER` | `groq`, `ollama`, or `none` |
+| `GROQ_API_KEY` | Groq free-tier key |
+| `GROQ_MODEL` | Default `llama-3.1-8b-instant` |
+| `OLLAMA_MODEL` | Default `llama3.2` |
+| `RATE_LIMIT_RPM` | Per-IP anti-abuse limit (default 20) |
+
+If Groq rate-limits or errors, the API returns retrieval results with a notice.
+
+## Deploy (Docker)
+
+```bash
+docker build -t rag-jazz .
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key -e LLM_PROVIDER=groq rag-jazz
+```
+
+The image builds the Chroma index at build time. Set `PORT` as needed for Railway or similar hosts.
+
+## Project layout
+
+| Path | Purpose |
+|---|---|
+| `app.py` | FastAPI web server |
+| `rag_core.py` | Shared retrieval helpers |
+| `llm_provider.py` | Groq / Ollama / none |
+| `static/` | Web UI |
+| `query.py` | CLI query tool |
+| `build_chunks.py` / `build_vectorstore.py` | Index pipeline |
+| `articles/` | Source Wikipedia articles |
+
+## Other scripts
+
+- `download_articles.py` — Primary Wikipedia downloader
+- `download_remaining.py` — MediaWiki REST fallback
+- `rebuild_manifest.py` — Regenerates `articles/_manifest.json`
